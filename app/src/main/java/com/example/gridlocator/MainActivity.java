@@ -12,28 +12,47 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        double longitudInicial,latitudInicial,longitudFinal,latitudFinal;
+        String grid;
 
-        Log.d("prueba", "" + calcularGrid(43.27233, -4.99110));
+        longitudInicial=GenerarCoordenadasAleatorias.generarLongitudAleatoria();
+        latitudInicial=GenerarCoordenadasAleatorias.generarLatitudAleatoria();
+
+        grid=calcularGrid(latitudInicial,longitudInicial);
+
+        longitudFinal=calcularLongitud(grid);
+        latitudFinal=calcularLatitud(grid);
+
+        Log.d("pru", ""+longitudInicial+", "+ latitudInicial);
+        Log.d("pru", ""+longitudFinal+", "+ latitudFinal);
+
+
+
+
+
+
+
+
+
 
     }
 
-    public double calcularLongitud(String grid) {
+    public double calcularLongitud(String grid){
 
         char[] miGrid = grid.toCharArray();
         double lo0, lo2, lo4, lo6, lo8;
 
 
-        double longitud, latitud;
+        double longitud;
 
         lo0 = (miGrid[0] - 'A') * 20;
         lo2 = (miGrid[2] - '0') * 2;
-        lo4 = (miGrid[4] - 'A') * 0.083333333333;
-        lo6 = (miGrid[6] - '0') * 0.008333333333;
-        lo8 = (miGrid[8] - 'A') * 0.000347222222;
-        longitud = lo0 + lo2 + lo4 + lo6 + lo8 - 180;
+        lo4 = (miGrid[4] - 'A') * 0.083333;
+        lo6 = (miGrid[6] - '0') * 0.0083333;
+        lo8 = (miGrid[8] - 'A') * 0.000347221;
+        //lo10 = (miGrid[10] - '0') * 0.0000347221;
 
-
-        Log.d("prueba", "Longitud calculada: " + longitud);
+        longitud = (lo0 + lo2 + lo4 + lo6 + lo8) - 180;
         return longitud;
 
     }
@@ -46,12 +65,11 @@ public class MainActivity extends AppCompatActivity {
 
         la1 = (miGrid[1] - 'A') * 10;
         la3 = (miGrid[3] - '0') * 1;
-        la5 = (miGrid[5] - 'A') * 0.041666666666;
-        la7 = (miGrid[7] - '0') * 0.004166666666;
-        la9 = (miGrid[9] - 'A') * 0.000173611111;
-        latitud = la1 + la3 + la5 + la7 + la9 - 90;
-        Log.d("prueba", "Latitud calculada: " + latitud);
-
+        la5 = (miGrid[5] - 'A') * 0.0416665;
+        la7 = (miGrid[7] - '0') * 0.00416665;
+        la9 = (miGrid[9] - 'A') * 0.00017361;
+        //la11 = (miGrid[11] - '0') * 0.000017361;
+        latitud = (la1 + la3 + la5 + la7 + la9) - 90;
         return (latitud);
     }
 
@@ -62,18 +80,17 @@ public class MainActivity extends AppCompatActivity {
         double longitud = longitudInicial + 180;
         double latitud = latitudInicial + 90;
 
-        double grados = 0;
-        int divisiones = 0;
-        double totalCuadros = 0;
-        double ultimo = 0;
-        double diferenciaCuadros = 0;
+        double grados;
+        int divisiones;
+        double totalCuadros;
+        double ultimo;
+        double diferenciaCuadros;
         int cuadrosAnteriores;
-        int numeroGrid = 0;
+        int numeroGrid;
 
 
         // longitud cuadricula 1
         grados = 20;
-        divisiones = 18;
         totalCuadros = longitud / grados;
         numeroGrid = (int) totalCuadros;
         grid[0] = (char) ('A' + numeroGrid);
@@ -124,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         //longitud cuadricula 6
-       /* grados = 0.0000347221;
+        /*
+        grados = 0.0000347221;
         divisiones = 10;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int)(ultimo)) * divisiones;
@@ -136,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
         // latitud cadricula 1
         grados = 10;
-        divisiones = 18;
         totalCuadros = latitud / grados;
         numeroGrid = (int) totalCuadros;
         grid[1] = (char) ('A' + numeroGrid);
