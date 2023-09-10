@@ -15,8 +15,16 @@ public class MainActivity extends AppCompatActivity {
 
         double longitudInicial, latitudInicial, longitudFinal, latitudFinal, distancia;
         String grid;
+        latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
+        longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
+        grid = CalcularGrid.grid(latitudInicial, longitudInicial);
 
+        longitudFinal = CalcularCoordenadasDesdeGrid.longitud(grid);
+        latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
+        distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
+
+/*
         long sumaDistancias=0;
 
         long de0a50=0;
@@ -25,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         long de150a200=0;
         long mas200=0;
 
-        long veces=1000000;
+        long veces=10000000;
 
         for (int i=0;i<=veces;i++) {
 
@@ -66,13 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        /*
+
         Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
         Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
         Log.d("prueba", "distancia: " + distancia);
         Log.d("prueba", "Grid coordenadas: : " + grid);
         */
-
 
 
     }
