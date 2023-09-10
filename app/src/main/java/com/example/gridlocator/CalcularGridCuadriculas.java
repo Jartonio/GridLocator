@@ -10,7 +10,7 @@ public class CalcularGridCuadriculas {
 
         double numeroGrid;
 
-        double cuadriculasTiene1Grado =2880;//(18*10*24*10*24)/360  //son las cuadriculas que tiene un grado
+        double cuadriculasTiene1Grado;
 
         double cuadriculasMiLongitud = 0;
         double cuadriculasMiLatitud=0;
@@ -20,6 +20,7 @@ public class CalcularGridCuadriculas {
         latitudInicial=latitudInicial+90;
         longitudInicial=longitudInicial+180;
 
+        cuadriculasTiene1Grado=2880;//(18*10*24*10*24)/360  //son las cuadriculas que tiene un grado
         cuadriculasMiLongitud = longitudInicial * cuadriculasTiene1Grado; //son las cuadriculas que ocula la longitud
 
 
@@ -53,7 +54,7 @@ public class CalcularGridCuadriculas {
 
 
 
-        cuadriculasTiene1Grado =5760;//(18*10*24*10*24)/180  //son las cuadriculas que tiene un grado
+        cuadriculasTiene1Grado =5790;//5760(18*10*24*10*24)/180  //son las cuadriculas que tiene un grado
         cuadriculasMiLatitud = latitudInicial * cuadriculasTiene1Grado;
 
         //Nivel 1 latitud
