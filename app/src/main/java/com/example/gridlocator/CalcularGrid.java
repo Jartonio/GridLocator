@@ -69,8 +69,8 @@ public class CalcularGrid {
         ultimo = totalCuadros;
 
 
-        /*longitud cuadricula 6
-
+        //longitud cuadricula 6
+        /*
         grados = 0.0000347221;
         divisiones = 10;
         totalCuadros = longitud / grados;
@@ -131,8 +131,8 @@ public class CalcularGrid {
         grid[9] = (char) ('A' + numeroGrid);
         ultimo = totalCuadros;
 
-        /*longitud cuadricula 6
-
+        //longitud cuadricula 6
+        /*
         grados = 0.000017361;
         divisiones = 10;
         totalCuadros = latitud / grados;

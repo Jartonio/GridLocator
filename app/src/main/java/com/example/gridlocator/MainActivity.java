@@ -25,17 +25,23 @@ public class MainActivity extends AppCompatActivity {
         distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
 
 
+
+
+
+
+
         long sumaDistancias=0;
 
-        long de0a50=0;
-        long de50a100=0;
-        long de100a150=0;
-        long de150a200=0;
-        long mas200=0;
+        long de0a10=0;
+        long de10a20=0;
+        long de20a30=0;
+        long de30a40=0;
+        long de40a50=0;
+        long mas50=0;
 
-        long veces=100000;
+        long veces=10000;
 
-        for (int i=0;i<=veces;i++) {
+        for (int i=1;i<=veces;i++) {
 
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
@@ -45,48 +51,50 @@ public class MainActivity extends AppCompatActivity {
             longitudFinal = CalcularCoordenadasDesdeGrid.longitud(grid);
             latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
             distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
-            sumaDistancias=sumaDistancias+((long)distancia);
+            sumaDistancias = sumaDistancias + ((long) distancia);
 
-            if (distancia<=50){
-                de0a50++;
+            if (distancia <= 10) {
+                de0a10++;
             }
-            if (distancia>50 && distancia<=100){
-                de50a100++;
+            if (distancia > 10 && distancia <= 20) {
+                de10a20++;
             }
-            if (distancia>100 && distancia<=150){
-                de100a150++;
+            if (distancia > 20 && distancia <= 30) {
+                de20a30++;
             }
-            if (distancia>150 && distancia<=200){
-                de150a200++;
+            if (distancia > 30 && distancia <= 40) {
+                de30a40++;
             }
-            if (distancia>200){
-                mas200++;
+            if (distancia > 40 && distancia <= 50) {
+                de40a50++;
             }
-          /*
+            if (distancia > 50) {
+                    mas50++;
+            }
+/*
             Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
             Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
             Log.d("prueba", "distancia: " + distancia);
             Log.d("prueba", "Grid coordenadas: : " + grid);
-*/
-        }
-        Log.d("prueba", "media de error: "+(long) (sumaDistancias/veces));
-        Log.d("prueba", "distancias menores de 50m:    "+de0a50);
-        Log.d("prueba", "distancias entre 50m y 100m:  "+de50a100);
-        Log.d("prueba", "distancias entre 100m y 150m: "+de100a150);
-        Log.d("prueba", "distancias entre 150m y 200m: "+de150a200);
-        Log.d("prueba", "distancias de mas de 200m:    "+mas200);
+            */
+
+}
+
+                Log.d("prueba", "Media de error: " + (long) (sumaDistancias / veces));
+                Log.d("prueba", "Distancias menores de 10m:   " + de0a10);
+                Log.d("prueba", "Distancias entre 10m y 20m:  " + de10a20);
+                Log.d("prueba", "Distancias entre 20m y 30m: " + de20a30);
+                Log.d("prueba", "Distancias entre 30m y 40m: " + de30a40);
+                Log.d("prueba", "Distancias entre 40m y 50m: " + de40a50);
+                Log.d("prueba", "Distancias de mas de 50m:   " + mas50);
 
 
+                Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
+                Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
+                Log.d("prueba", "distancia: " + distancia);
+                Log.d("prueba", "Grid coordenadas: : " + grid);
 
 
-        //Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
-        //Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
-        //Log.d("prueba", "distancia: " + distancia);
-        //Log.d("prueba", "Grid coordenadas: : " + grid);
-
-
-
-    }
-
+            }
 
 }
