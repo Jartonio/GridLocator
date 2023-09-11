@@ -1,9 +1,11 @@
 package com.example.gridlocator;
 
+import java.text.DecimalFormat;
+
 public class CalcularDistanciaEntreCoordenadas {
 
     // Función para calcular la distancia en metros entre dos coordenadas en grados decimales
-    public static long distancia(double latitud1, double longitud1, double latitud2, double longitud2) {
+    public static double distancia(double latitud1, double longitud1, double latitud2, double longitud2) {
 
         double radioTierra = 6371.0; // Radio de la Tierra en kilómetros
 
@@ -23,6 +25,7 @@ public class CalcularDistanciaEntreCoordenadas {
 
         // Calcular la distancia en metros
         double distanciaEnKilometros = radioTierra * c;
-        return (long)(distanciaEnKilometros * 1000); // Convertir a metros
+
+        return distanciaEnKilometros * 1000; // Convertir a metros
     }
 }
