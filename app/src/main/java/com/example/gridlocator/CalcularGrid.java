@@ -37,7 +37,7 @@ public class CalcularGrid {
 
 
         //longitud cuadricula 3
-        grados = 0.083333;
+        grados = 0.0833333333;//0.083333
         divisiones = 24;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
@@ -48,7 +48,7 @@ public class CalcularGrid {
 
 
         //longitud cuadricula 4
-        grados = 0.0083333;
+        grados = 0.0083333333;//0.0083333
         divisiones = 10;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
@@ -59,7 +59,7 @@ public class CalcularGrid {
 
 
         //longitud cuadricula 5
-        grados = 0.000347221;
+        grados = 0.0003472222;//0.000347221
         divisiones = 24;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
@@ -100,7 +100,7 @@ public class CalcularGrid {
 
 
         //latitud cuadricula 3
-        grados = 0.0416665;
+        grados = 0.0416666666;//0.0416665
         divisiones = 24;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
@@ -111,7 +111,7 @@ public class CalcularGrid {
 
 
         //latitud cuadricula 4
-        grados = 0.00416665;
+        grados = 0.0041666666;// 0.00416665
         divisiones = 10;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
@@ -122,7 +122,7 @@ public class CalcularGrid {
 
 
         //latitud cuadricula 5
-        grados = 0.00017361;
+        grados = 0.0001736111;//0.00017361
         divisiones = 24;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;

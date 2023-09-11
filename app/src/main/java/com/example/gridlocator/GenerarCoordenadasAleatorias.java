@@ -14,11 +14,20 @@ public class GenerarCoordenadasAleatorias {
 
         public static double latitudAleatoria() {
             Random random = new Random();
-            return MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat();
+            double latitud=(MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat());
+
+            return FormatearDecimales.formatear(latitud);
+            //return MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat();
+
+
         }
         public static double longitudAleatoria() {
             Random random = new Random();
-            return MIN_LONGITUDE + (MAX_LONGITUDE - MIN_LONGITUDE) * random.nextFloat();
+            double longitud=MIN_LONGITUDE + (MAX_LONGITUDE - MIN_LONGITUDE) * random.nextFloat();
+
+            return  FormatearDecimales.formatear(longitud);
+            //return   MIN_LONGITUDE + (MAX_LONGITUDE - MIN_LONGITUDE) * random.nextFloat();
+
         }
     }
 

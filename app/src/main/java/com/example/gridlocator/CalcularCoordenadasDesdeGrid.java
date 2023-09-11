@@ -18,7 +18,9 @@ public class CalcularCoordenadasDesdeGrid {
         //lo10 = (miGrid[10] - '0') * 0.0000347221;
 
         longitud = (lo0 + lo2 + lo4 + lo6 + lo8) - 180;
-        return longitud;
+
+        return  Double.parseDouble(String.format("%.6f", longitud));
+        //return longitud;
     }
 
     public static double latitud(String grid) {
@@ -34,6 +36,8 @@ public class CalcularCoordenadasDesdeGrid {
         la9 = (miGrid[9] - 'A') * 0.00017361;
         //la11 = (miGrid[11] - '0') * 0.000017361;
         latitud = (la1 + la3 + la5 + la7 + la9) - 90;
-        return (latitud);
+
+        return  Double.parseDouble(String.format("%.6f",latitud));
+        //return (latitud);
     }
 }
