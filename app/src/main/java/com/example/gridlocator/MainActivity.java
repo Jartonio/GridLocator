@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         long de150a200=0;
         long mas200=0;
 
-        long veces=1000;
+        long veces=100000;
 
         for (int i=0;i<=veces;i++) {
 
@@ -79,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
-        Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
-        Log.d("prueba", "distancia: " + distancia);
-        Log.d("prueba", "Grid coordenadas: : " + grid);
+        //Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
+        //Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
+        //Log.d("prueba", "distancia: " + distancia);
+        //Log.d("prueba", "Grid coordenadas: : " + grid);
 
 
 

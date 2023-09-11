@@ -16,8 +16,7 @@ public class GenerarCoordenadasAleatorias {
             Random random = new Random();
             double latitud=(MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat());
 
-            return FormatearDecimales.formatear(latitud);
-            //return MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat();
+            return MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat();
 
 
         }
@@ -25,9 +24,7 @@ public class GenerarCoordenadasAleatorias {
             Random random = new Random();
             double longitud=MIN_LONGITUDE + (MAX_LONGITUDE - MIN_LONGITUDE) * random.nextFloat();
 
-            return  FormatearDecimales.formatear(longitud);
-            //return   MIN_LONGITUDE + (MAX_LONGITUDE - MIN_LONGITUDE) * random.nextFloat();
-
+            return   MIN_LONGITUDE + (MAX_LONGITUDE - MIN_LONGITUDE) * random.nextFloat();
         }
     }
 
