@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class GenerarCoordenadasAleatorias {
 
+
         // Rango válido para latitud en grados decimales
         private static final double MIN_LATITUDE = -90.0;
         private static final double MAX_LATITUDE = 90.0;

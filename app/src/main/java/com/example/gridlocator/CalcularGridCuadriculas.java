@@ -4,6 +4,7 @@ import android.util.Log;
 
 public class CalcularGridCuadriculas {
 
+
     public static String grid(double latitudInicial, double longitudInicial) {
 
         char[] grid = new char[10];

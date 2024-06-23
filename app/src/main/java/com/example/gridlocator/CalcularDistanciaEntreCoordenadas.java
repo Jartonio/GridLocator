@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 public class CalcularDistanciaEntreCoordenadas {
 
+
     // Función para calcular la distancia en metros entre dos coordenadas en grados decimales
     public static double distancia(double latitud1, double longitud1, double latitud2, double longitud2) {
 

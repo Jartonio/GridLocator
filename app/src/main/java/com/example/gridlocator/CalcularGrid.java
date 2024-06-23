@@ -4,6 +4,8 @@ public class CalcularGrid {
 
     public static String grid(double latitudInicial, double longitudInicial) {
 
+
+
         //Este metodo calcula el Grid Locator de Maidenhead a partir de una latitud y una longuitud.
         //Entrega un Grid en formato: AA00AA00AA (18x10x24x10x24).
 

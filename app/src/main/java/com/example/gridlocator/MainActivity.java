@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
 
 
+
             distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
             sumaDistancias = sumaDistancias + distancia;
 
