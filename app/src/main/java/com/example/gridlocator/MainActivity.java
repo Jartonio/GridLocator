@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,29 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         String grid;
 
-        latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
-        longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
-
-        //latitudInicial=81.39405727386475;
-        //longitudInicial=-67.15644121170044;
-
-        grid = CalcularGrid.grid(latitudInicial, longitudInicial);
-
-        longitudFinal = CalcularCoordenadasDesdeGrid.longitud(grid);
-        latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
-
-        distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
-/*
-        Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
-        Log.d("prueba", "Coordenadas finales  : " + (latitudFinal)+ ", " + (longitudFinal));
-        Log.d("prueba", "distancia: " + distancia);
-        Log.d("prueba", "Grid coordenadas: : " + grid);
-
-*/
-
-
         double sumaDistancias = 0;
-
         double de0a10 = 0;
         double de10a20 = 0;
         double de20a30 = 0;
@@ -58,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
             longitudFinal = CalcularCoordenadasDesdeGrid.longitud(grid);
             latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
-
-
 
             distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
             sumaDistancias = sumaDistancias + distancia;
@@ -90,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("prueba", "Grid coordenadas: : " + grid);
 
 
-}
+
 */
             Log.d("prueba", "Media de error: " + (sumaDistancias / veces));
             Log.d("prueba", "Distancias menores de 10m:   " + de0a10);
@@ -99,14 +74,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("prueba", "Distancias entre 30m y 40m: " + de30a40);
             Log.d("prueba", "Distancias entre 40m y 50m: " + de40a50);
             Log.d("prueba", "Distancias de mas de 50m:   " + mas50);
-
-/*
-                Log.d("prueba", "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
-                Log.d("prueba", "Coordenadas finales  : " + latitudFinal + ", " + longitudFinal);
-                Log.d("prueba", "distancia: " + distancia);
-                Log.d("prueba", "Grid coordenadas: : " + grid);
-*/
-
 
     }
 }

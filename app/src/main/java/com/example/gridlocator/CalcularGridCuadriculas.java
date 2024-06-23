@@ -4,15 +4,12 @@ import android.util.Log;
 
 public class CalcularGridCuadriculas {
 
-
     public static String grid(double latitudInicial, double longitudInicial) {
 
         char[] grid = new char[10];
 
         double numeroGrid;
-
         double cuadriculasTiene1Grado;
-
         double cuadriculasMiLongitud = 0;
         double cuadriculasMiLatitud=0;
         double cuadrosNivel=0;

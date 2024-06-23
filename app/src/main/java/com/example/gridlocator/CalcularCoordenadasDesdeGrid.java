@@ -6,10 +6,8 @@ public class CalcularCoordenadasDesdeGrid {
 
         //Este metodo devuelve la longitud a partir de un grid.
 
-
         char[] miGrid = grid.toCharArray();
         double longitud, lo0, lo2, lo4, lo6, lo8;
-
 
         lo0 = (miGrid[0] - 'A') * 20;
         lo2 = (miGrid[2] - '0') * 2;
@@ -22,7 +20,6 @@ public class CalcularCoordenadasDesdeGrid {
 
         //return  Double.parseDouble(String.format("%.6f", longitud));
         return longitud + (0.0003472222 / 2);
-
     }
 
     public static double latitud(String grid) {
