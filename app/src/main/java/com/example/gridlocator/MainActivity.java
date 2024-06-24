@@ -17,14 +17,15 @@ public class MainActivity extends AppCompatActivity {
         String grid;
 
         double sumaDistancias = 0;
-        double de0a10 = 0;
+        double de0a5=0;
+        double de5a10 = 0;
         double de10a20 = 0;
         double de20a30 = 0;
         double de30a40 = 0;
         double de40a50 = 0;
         double mas50 = 0;
 
-        long veces = 1000;
+        long veces = 100000;
 
         for (int i = 1; i <= veces; i++) {
 
@@ -39,9 +40,13 @@ public class MainActivity extends AppCompatActivity {
             distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
             sumaDistancias = sumaDistancias + distancia;
 
-            if (distancia <= 10) {
-                de0a10++;
+            if (distancia <= 5) {
+                de0a5++;
             }
+            if (distancia > 5 && distancia <= 10) {
+                de5a10++;
+            }
+
             if (distancia > 10 && distancia <= 20) {
                 de10a20++;
             }
@@ -68,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
 */
             Log.d("prueba", "Media de error: " + (sumaDistancias / veces));
-            Log.d("prueba", "Distancias menores de 10m:   " + de0a10);
-            Log.d("prueba", "Distancias entre 10m y 20m:  " + de10a20);
+            Log.d("prueba", "Distancias menores de 5m:   " + de0a5);
+            Log.d("prueba", "Distancias entre 5m y 10m:  " + de5a10);
+            Log.d("prueba", "Distancias entre 10m y 20m: " + de10a20);
             Log.d("prueba", "Distancias entre 20m y 30m: " + de20a30);
             Log.d("prueba", "Distancias entre 30m y 40m: " + de30a40);
             Log.d("prueba", "Distancias entre 40m y 50m: " + de40a50);
