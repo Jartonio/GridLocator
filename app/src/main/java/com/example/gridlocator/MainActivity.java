@@ -25,19 +25,24 @@ public class MainActivity extends AppCompatActivity {
         double de40a50 = 0;
         double mas50 = 0;
 
-        long veces = 100000;
+        long veces = 1000000;
+
+        GridLocator miGridLocator=new GridLocator();
 
         for (int i = 1; i <= veces; i++) {
 
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            grid = CalcularGrid.grid(latitudInicial, longitudInicial);
+            //grid = CalcularGrid.grid(latitudInicial, longitudInicial);
 
-            longitudFinal = CalcularCoordenadasDesdeGrid.longitud(grid);
-            latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
+            miGridLocator.setLatitudLonguitud(latitudInicial,longitudInicial);
 
-            distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
+            //longitudFinal = CalcularCoordenadasDesdeGrid.longitud(grid);
+            //latitudFinal = CalcularCoordenadasDesdeGrid.latitud(grid);
+
+            //distancia = CalcularDistanciaEntreCoordenadas.distancia(latitudInicial, longitudInicial, latitudFinal, longitudFinal);
+            distancia=miGridLocator.getDesviacion();
             sumaDistancias = sumaDistancias + distancia;
 
             if (distancia <= 5) {

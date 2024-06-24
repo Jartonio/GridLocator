@@ -1,6 +1,5 @@
 package com.example.gridlocator;
 
-import java.text.DecimalFormat;
 
 public class CalcularDistanciaEntreCoordenadas {
 
