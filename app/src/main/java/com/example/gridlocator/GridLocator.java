@@ -3,9 +3,7 @@ package com.example.gridlocator;
 public class GridLocator {
 
     private double latitud, longuitud, desviacion;
-
     private String gridLocator;
-
 
     public GridLocator() {
     }
@@ -14,13 +12,12 @@ public class GridLocator {
         return gridLocator;
     }
 
-    public void setLatitudLonguitud(double latitud,double longuitud) {
+    public void setLatitudLonguitud(double latitud, double longuitud) {
         this.latitud = latitud;
         this.longuitud = longuitud;
         gridLocator = calcularGridLocator(latitud, longuitud);
         desviacion = metrosDesviacion();
     }
-
 
     public double getDesviacion() {
         return desviacion;
@@ -34,8 +31,8 @@ public class GridLocator {
         double longitud = longitudInicial + 180;
         double latitud = latitudInicial + 90;
 
-        double grados,totalCuadros,ultimo,diferenciaCuadros;
-        int cuadrosAnteriores, numeroGrid,divisiones;
+        double grados, totalCuadros, ultimo, diferenciaCuadros;
+        int cuadrosAnteriores, numeroGrid, divisiones;
 
         char[] grid = new char[10];
 
@@ -146,11 +143,8 @@ public class GridLocator {
         lo4 = (miGrid[4] - 'A') * 0.08333333;//0.083333;
         lo6 = (miGrid[6] - '0') * 0.00833333;//0.0083333;
         lo8 = (miGrid[8] - 'A') * 0.00034722;//0.000347221;
-        //lo10 = (miGrid[10] - '0') * 0.0000347221; --  Activar si el grid tiene 6 de precision
-
         longitud = (lo0 + lo2 + lo4 + lo6 + lo8) - 180;
 
-        //return  Double.parseDouble(String.format("%.6f", longitud));
         return longitud + (0.0003472222 / 2);
     }
 
@@ -166,11 +160,8 @@ public class GridLocator {
         la5 = (miGrid[5] - 'A') * 0.04166666;//0.0416665;
         la7 = (miGrid[7] - '0') * 0.00416666;//0.00416665;
         la9 = (miGrid[9] - 'A') * 0.00017361;//0.00017361;
-        //la11 = (miGrid[11] - '0') * 0.000017361;  --  Activar si el grid tiene 6 de precision
-
         latitud = (la1 + la3 + la5 + la7 + la9) - 90;
 
-        //return  Double.parseDouble(String.format("%.6f",latitud));
         return latitud + (0.0001736111 / 2);
     }
 
