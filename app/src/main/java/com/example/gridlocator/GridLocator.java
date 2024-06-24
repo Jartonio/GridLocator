@@ -134,7 +134,7 @@ public class GridLocator {
         return String.valueOf(grid);
     }
 
-    private double longitudGrid() {
+    private double obtenerLongitudGrid() {
 
         //Este metodo devuelve la longitud a partir de un grid.
 
@@ -151,7 +151,7 @@ public class GridLocator {
         return longitud + (((double) 360/18/10/24/10/24)/ 2);
     }
 
-    private double latitudGrid() {
+    private double obtenerLatitudGrid() {
 
         //Este metodo devuelve la latitud a partir de un grid.
 
@@ -175,8 +175,8 @@ public class GridLocator {
         // Convertir las coordenadas de grados a radianes
         double latitud1Rad = Math.toRadians(latitud);
         double longitud1Rad = Math.toRadians(longuitud);
-        double latitud2Rad = Math.toRadians(latitudGrid());
-        double longitud2Rad = Math.toRadians(longitudGrid());
+        double latitud2Rad = Math.toRadians(obtenerLatitudGrid());
+        double longitud2Rad = Math.toRadians(obtenerLongitudGrid());
 
         // Calcular la diferencia entre las longitudes y latitudes
         double diferenciaLatitud = latitud2Rad - latitud1Rad;
