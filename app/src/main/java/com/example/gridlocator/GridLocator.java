@@ -16,7 +16,7 @@ public class GridLocator {
         this.latitud = latitud;
         this.longuitud = longuitud;
         gridLocator = calcularGridLocator(latitud, longuitud);
-        desviacion = metrosDesviacion();
+        desviacion = calcularMetrosDesviacion();
     }
 
     public double getDesviacion() {
@@ -37,15 +37,16 @@ public class GridLocator {
         char[] grid = new char[10];
 
         // longitud cuadricula 1
-        grados = 20;
+        divisiones=18;
+        grados = 360f/divisiones;
         totalCuadros = longitud / grados;
         numeroGrid = (int) totalCuadros;
         grid[0] = (char) ('A' + numeroGrid);
         ultimo = totalCuadros;
 
         //longitud cuadricula 2
-        grados = 2;
         divisiones = 10;
+        grados = grados/divisiones;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -54,8 +55,9 @@ public class GridLocator {
         ultimo = totalCuadros;
 
         //longitud cuadricula 3
-        grados = 0.0833333333;
         divisiones = 24;
+        grados = grados/ divisiones;
+
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -64,8 +66,8 @@ public class GridLocator {
         ultimo = totalCuadros;
 
         //longitud cuadricula 4
-        grados = 0.0083333333;
         divisiones = 10;
+        grados = grados / divisiones;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -74,8 +76,8 @@ public class GridLocator {
         ultimo = totalCuadros;
 
         //longitud cuadricula 5
-        grados = 0.0003472222;
         divisiones = 24;
+        grados = grados / divisiones;
         totalCuadros = longitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -83,15 +85,16 @@ public class GridLocator {
         grid[8] = (char) ('A' + numeroGrid);
 
         // latitud cadricula 1
-        grados = 10;
+        divisiones=18;
+        grados = 180f/divisiones;
         totalCuadros = latitud / grados;
         numeroGrid = (int) totalCuadros;
         grid[1] = (char) ('A' + numeroGrid);
         ultimo = totalCuadros;
 
         //latitud cuadricula 2
-        grados = 1;
-        divisiones = 10;
+        divisiones=10;
+        grados = grados/divisiones;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -100,8 +103,8 @@ public class GridLocator {
         ultimo = totalCuadros;
 
         //latitud cuadricula 3
-        grados = 0.0416666666;
-        divisiones = 24;
+        divisiones=24;
+        grados = grados/divisiones;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -110,8 +113,8 @@ public class GridLocator {
         ultimo = totalCuadros;
 
         //latitud cuadricula 4
-        grados = 0.0041666666;
-        divisiones = 10;
+        divisiones=10;
+        grados = grados / divisiones;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -120,8 +123,8 @@ public class GridLocator {
         ultimo = totalCuadros;
 
         //latitud cuadricula 5
-        grados = 0.0001736111;
-        divisiones = 24;
+        divisiones=24;
+        grados = grados / divisiones;
         totalCuadros = latitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
@@ -138,14 +141,14 @@ public class GridLocator {
         char[] miGrid = gridLocator.toCharArray();
         double longitud, lo0, lo2, lo4, lo6, lo8;
 
-        lo0 = (miGrid[0] - 'A') * 20;
-        lo2 = (miGrid[2] - '0') * 2;
-        lo4 = (miGrid[4] - 'A') * 0.08333333;//0.083333;
-        lo6 = (miGrid[6] - '0') * 0.00833333;//0.0083333;
-        lo8 = (miGrid[8] - 'A') * 0.00034722;//0.000347221;
+        lo0 = (miGrid[0] - 'A') * ((double) 360 /18);
+        lo2 = (miGrid[2] - '0') * ((double) 360 /18/10);
+        lo4 = (miGrid[4] - 'A') * ((double) 360 /18/10/24);
+        lo6 = (miGrid[6] - '0') * ((double) 360/18/10/24/10);
+        lo8 = (miGrid[8] - 'A') * ((double) 360/18/10/24/10/24);
         longitud = (lo0 + lo2 + lo4 + lo6 + lo8) - 180;
 
-        return longitud + (0.0003472222 / 2);
+        return longitud + (((double) 360/18/10/24/10/24)/ 2);
     }
 
     private double latitudGrid() {
@@ -155,17 +158,17 @@ public class GridLocator {
         char[] miGrid = gridLocator.toCharArray();
         double latitud, la1, la3, la5, la7, la9;
 
-        la1 = (miGrid[1] - 'A') * 10;
-        la3 = (miGrid[3] - '0') * 1;
-        la5 = (miGrid[5] - 'A') * 0.04166666;//0.0416665;
-        la7 = (miGrid[7] - '0') * 0.00416666;//0.00416665;
-        la9 = (miGrid[9] - 'A') * 0.00017361;//0.00017361;
+        la1 = (miGrid[1] - 'A') * ((double) 180/18);
+        la3 = (miGrid[3] - '0') * ((double) 180/18/10);
+        la5 = (miGrid[5] - 'A') * ((double) 180/18/10/24);
+        la7 = (miGrid[7] - '0') * ((double) 180/18/10/24/10);
+        la9 = (miGrid[9] - 'A') * ((double) 180/18/10/24/10/24);
         latitud = (la1 + la3 + la5 + la7 + la9) - 90;
 
-        return latitud + (0.0001736111 / 2);
+        return latitud + (((double) 180/18/10/24/10/24) / 2);
     }
 
-    private double metrosDesviacion() {
+    private double calcularMetrosDesviacion() {
 
         double radioTierra = 6371.0; // Radio de la Tierra en kilómetros
 
@@ -188,5 +191,4 @@ public class GridLocator {
 
         return distanciaEnKilometros * 1000; // Convertir a metros
     }
-
 }
