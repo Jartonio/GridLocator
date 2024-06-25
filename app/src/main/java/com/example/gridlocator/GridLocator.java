@@ -2,7 +2,7 @@ package com.example.gridlocator;
 
 public class GridLocator {
 
-    private double latitud, longuitud, desviacion;
+    private double latitud, longuitud, desviacion,latitudGrid,longuitudGrid;
     private String gridLocator;
 
     public GridLocator() {
@@ -15,15 +15,21 @@ public class GridLocator {
     public void setLatitudLonguitud(double latitud, double longuitud) {
         this.latitud = latitud;
         this.longuitud = longuitud;
-        gridLocator = calcularGridLocator(latitud, longuitud);
+        gridLocator = calcularGrid(latitud, longuitud);
         desviacion = calcularMetrosDesviacion();
+    }
+    public void setGridLocator(String grid){
+        gridLocator=grid;
     }
 
     public double getDesviacion() {
         return desviacion;
     }
+    public String getCoodenadasGrid(){
+        return latitudGrid+", "+longuitudGrid;
+    }
 
-    private String calcularGridLocator(double latitudInicial, double longitudInicial) {
+    private String calcularGrid(double latitudInicial, double longitudInicial) {
 
         //Este metodo calcula el Grid Locator de Maidenhead a partir de una latitud y una longuitud.
         //Entrega un Grid en formato: AA00AA00AA (18x10x24x10x24).
@@ -134,6 +140,7 @@ public class GridLocator {
         return String.valueOf(grid);
     }
 
+
     private double obtenerLongitudGrid() {
 
         //Este metodo devuelve la longitud a partir de un grid.
@@ -147,8 +154,9 @@ public class GridLocator {
         lo6 = (miGrid[6] - '0') * ((double) 360/18/10/24/10);
         lo8 = (miGrid[8] - 'A') * ((double) 360/18/10/24/10/24);
         longitud = (lo0 + lo2 + lo4 + lo6 + lo8) - 180;
-
-        return longitud + (((double) 360/18/10/24/10/24)/ 2);
+        longitud=longitud + (((double) 360/18/10/24/10/24)/ 2);
+        longuitudGrid=longitud;
+        return longitud ;
     }
 
     private double obtenerLatitudGrid() {
@@ -164,8 +172,9 @@ public class GridLocator {
         la7 = (miGrid[7] - '0') * ((double) 180/18/10/24/10);
         la9 = (miGrid[9] - 'A') * ((double) 180/18/10/24/10/24);
         latitud = (la1 + la3 + la5 + la7 + la9) - 90;
-
-        return latitud + (((double) 180/18/10/24/10/24) / 2);
+        latitud=latitud + (((double) 180/18/10/24/10/24) / 2);
+        latitudGrid=latitud;
+        return latitud;
     }
 
     private double calcularMetrosDesviacion() {
@@ -191,4 +200,6 @@ public class GridLocator {
 
         return distanciaEnKilometros * 1000; // Convertir a metros
     }
+
+
 }
