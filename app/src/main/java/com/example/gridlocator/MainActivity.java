@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         double de40a50 = 0;
         double mas50 = 0;
 
-        long veces = 1000;
+        long veces = 100000000;
 
         GridLocator miGridLocator = new GridLocator();
         int error = 0;

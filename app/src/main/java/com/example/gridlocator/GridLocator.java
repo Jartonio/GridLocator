@@ -18,9 +18,7 @@ public class GridLocator {
         gridLocator = calcularGrid(latitud, longuitud);
         desviacion = calcularMetrosDesviacion();
     }
-    public void setGridLocator(String grid){
-        gridLocator=grid;
-    }
+
 
     public double getDesviacion() {
         return desviacion;
@@ -40,7 +38,7 @@ public class GridLocator {
         double grados, totalCuadros, ultimo, diferenciaCuadros;
         int cuadrosAnteriores, numeroGrid, divisiones;
 
-        char[] grid = new char[10];
+        char[] grid = new char[12];
 
         // longitud cuadricula 1
         divisiones=18;
@@ -89,6 +87,17 @@ public class GridLocator {
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
         grid[8] = (char) ('A' + numeroGrid);
+        ultimo = totalCuadros;
+
+        //longitud cuadricula 6
+        divisiones = 10;
+        grados = grados / divisiones;
+        totalCuadros = longitud / grados;
+        cuadrosAnteriores = ((int) (ultimo)) * divisiones;
+        diferenciaCuadros = totalCuadros - cuadrosAnteriores;
+        numeroGrid = (int) diferenciaCuadros;
+        grid[10] = (char) ('0' + numeroGrid);
+
 
         // latitud cadricula 1
         divisiones=18;
@@ -136,6 +145,16 @@ public class GridLocator {
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
         grid[9] = (char) ('A' + numeroGrid);
+        ultimo = totalCuadros;
+
+        //latitud cuadricula 6
+        divisiones=10;
+        grados = grados / divisiones;
+        totalCuadros = latitud / grados;
+        cuadrosAnteriores = ((int) (ultimo)) * divisiones;
+        diferenciaCuadros = totalCuadros - cuadrosAnteriores;
+        numeroGrid = (int) diferenciaCuadros;
+        grid[11] = (char) ('0' + numeroGrid);
 
         return String.valueOf(grid);
     }
@@ -146,15 +165,17 @@ public class GridLocator {
         //Este metodo devuelve la longitud a partir de un grid.
 
         char[] miGrid = gridLocator.toCharArray();
-        double longitud, lo0, lo2, lo4, lo6, lo8;
+        double longitud, lo0, lo2, lo4, lo6, lo8,lo10;
 
         lo0 = (miGrid[0] - 'A') * ((double) 360 /18);
         lo2 = (miGrid[2] - '0') * ((double) 360 /18/10);
         lo4 = (miGrid[4] - 'A') * ((double) 360 /18/10/24);
         lo6 = (miGrid[6] - '0') * ((double) 360/18/10/24/10);
         lo8 = (miGrid[8] - 'A') * ((double) 360/18/10/24/10/24);
-        longitud = (lo0 + lo2 + lo4 + lo6 + lo8) - 180;
-        longitud=longitud + (((double) 360/18/10/24/10/24)/ 2);
+        lo10 = (miGrid[10] - '0') * ((double) 360/18/10/24/10/24/10);
+
+        longitud = (lo0 + lo2 + lo4 + lo6 + lo8+lo10) - 180;
+        longitud=longitud + (((double) 360/18/10/24/10/24/10)/ 2);
         longuitudGrid=longitud;
         return longitud ;
     }
@@ -164,15 +185,16 @@ public class GridLocator {
         //Este metodo devuelve la latitud a partir de un grid.
 
         char[] miGrid = gridLocator.toCharArray();
-        double latitud, la1, la3, la5, la7, la9;
+        double latitud, la1, la3, la5, la7, la9,la11;
 
         la1 = (miGrid[1] - 'A') * ((double) 180/18);
         la3 = (miGrid[3] - '0') * ((double) 180/18/10);
         la5 = (miGrid[5] - 'A') * ((double) 180/18/10/24);
         la7 = (miGrid[7] - '0') * ((double) 180/18/10/24/10);
         la9 = (miGrid[9] - 'A') * ((double) 180/18/10/24/10/24);
-        latitud = (la1 + la3 + la5 + la7 + la9) - 90;
-        latitud=latitud + (((double) 180/18/10/24/10/24) / 2);
+        la11 = (miGrid[11] - '0') * ((double) 180/18/10/24/10/24/10);
+        latitud = (la1 + la3 + la5 + la7 + la9+la11) - 90;
+        latitud=latitud + (((double) 180/18/10/24/10/24/10) / 2);
         latitudGrid=latitud;
         return latitud;
     }
