@@ -1,8 +1,11 @@
 package com.example.gridlocator;
 
+import java.math.BigDecimal;
+
 public class GridLocator {
 
-    private double latitud, longuitud, desviacion,latitudGrid,longuitudGrid;
+    private double latitud, longuitud, desviacion;
+    private BigDecimal latitudGrid,longuitudGrid;
     private String gridLocator;
 
     public GridLocator() {
@@ -30,7 +33,7 @@ public class GridLocator {
     private String calcularGrid(double latitudInicial, double longitudInicial) {
 
         //Este metodo calcula el Grid Locator de Maidenhead a partir de una latitud y una longuitud.
-        //Entrega un Grid en formato: AA00AA00AA (18x10x24x10x24).
+        //Entrega un Grid en formato: AA00AA00AA00 (18x10x24x10x24x10).
 
         double longitud = longitudInicial + 180;
         double latitud = latitudInicial + 90;
@@ -160,7 +163,7 @@ public class GridLocator {
     }
 
 
-    private double obtenerLongitudGrid() {
+    private BigDecimal obtenerLongitudGrid() {
 
         //Este metodo devuelve la longitud a partir de un grid.
 
@@ -172,15 +175,16 @@ public class GridLocator {
         lo4 = (miGrid[4] - 'A') * ((double) 360 /18/10/24);
         lo6 = (miGrid[6] - '0') * ((double) 360/18/10/24/10);
         lo8 = (miGrid[8] - 'A') * ((double) 360/18/10/24/10/24);
-        lo10 = (miGrid[10] - '0') * ((double) 360/18/10/24/10/24/10);
+        lo10 =(miGrid[10] - '0') * ((double) 360/18/10/24/10/24/10);
 
         longitud = (lo0 + lo2 + lo4 + lo6 + lo8+lo10) - 180;
         longitud=longitud + (((double) 360/18/10/24/10/24/10)/ 2);
-        longuitudGrid=longitud;
-        return longitud ;
+        longuitudGrid=BigDecimal.valueOf(longitud);
+        return BigDecimal.valueOf(longitud);
+
     }
 
-    private double obtenerLatitudGrid() {
+    private BigDecimal obtenerLatitudGrid() {
 
         //Este metodo devuelve la latitud a partir de un grid.
 
@@ -195,8 +199,8 @@ public class GridLocator {
         la11 = (miGrid[11] - '0') * ((double) 180/18/10/24/10/24/10);
         latitud = (la1 + la3 + la5 + la7 + la9+la11) - 90;
         latitud=latitud + (((double) 180/18/10/24/10/24/10) / 2);
-        latitudGrid=latitud;
-        return latitud;
+        latitudGrid=BigDecimal.valueOf(latitud);
+        return BigDecimal.valueOf(latitud);
     }
 
     private double calcularMetrosDesviacion() {
@@ -206,8 +210,8 @@ public class GridLocator {
         // Convertir las coordenadas de grados a radianes
         double latitud1Rad = Math.toRadians(latitud);
         double longitud1Rad = Math.toRadians(longuitud);
-        double latitud2Rad = Math.toRadians(obtenerLatitudGrid());
-        double longitud2Rad = Math.toRadians(obtenerLongitudGrid());
+        double latitud2Rad = Math.toRadians(obtenerLatitudGrid().doubleValue());
+        double longitud2Rad = Math.toRadians(obtenerLongitudGrid().doubleValue());
 
         // Calcular la diferencia entre las longitudes y latitudes
         double diferenciaLatitud = latitud2Rad - latitud1Rad;

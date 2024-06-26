@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         double de4a5=0;
         double mayor5=0;
 
-        long veces = 1;
+        long veces = 100000;
 
         GridLocator miGridLocator = new GridLocator();
         int error = 0;
@@ -32,14 +32,14 @@ public class MainActivity extends AppCompatActivity {
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            latitudInicial= 2.808133853855514;
-            longitudInicial=104.14178221727074;
+           // latitudInicial= 0.0;
+            //longitudInicial=0.0;
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
 
-            Log.d(tag, "Coordenadas: "+ latitudInicial+", "+longitudInicial);
-            Log.d(tag, "Grid: "+ miGridLocator.getGridLocator());
-            Log.d(tag, "Coordenadas Grid: "+ miGridLocator.getCoodenadasGrid());
-            Log.d(tag, "------------------------------------------");
+            //Log.d(tag, "Coordenadas: "+ latitudInicial+", "+longitudInicial);
+            //Log.d(tag, "Grid: "+ miGridLocator.getGridLocator());
+            //Log.d(tag, "Coordenadas Grid: "+ miGridLocator.getCoodenadasGrid());
+            //Log.d(tag, "------------------------------------------");
 
             distancia = miGridLocator.getDesviacion();
             sumaDistancias = sumaDistancias + distancia;
