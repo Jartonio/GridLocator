@@ -17,15 +17,14 @@ public class MainActivity extends AppCompatActivity {
         String grid, tag = "Log.GridLocator";
 
         double sumaDistancias = 0;
-        double de0a5 = 0;
-        double de5a10 = 0;
-        double de10a20 = 0;
-        double de20a30 = 0;
-        double de30a40 = 0;
-        double de40a50 = 0;
-        double mas50 = 0;
+        double menor1=0;
+        double de1a2=0;
+        double de2a3=0;
+        double de3a4=0;
+        double de4a5=0;
+        double mayor5=0;
 
-        long veces = 100000000;
+        long veces = 1;
 
         GridLocator miGridLocator = new GridLocator();
         int error = 0;
@@ -33,32 +32,34 @@ public class MainActivity extends AppCompatActivity {
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-
+            latitudInicial= 2.808133853855514;
+            longitudInicial=104.14178221727074;
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
+
+            Log.d(tag, "Coordenadas: "+ latitudInicial+", "+longitudInicial);
+            Log.d(tag, "Grid: "+ miGridLocator.getGridLocator());
+            Log.d(tag, "Coordenadas Grid: "+ miGridLocator.getCoodenadasGrid());
+            Log.d(tag, "------------------------------------------");
 
             distancia = miGridLocator.getDesviacion();
             sumaDistancias = sumaDistancias + distancia;
 
-            if (distancia <= 5) {
-                de0a5++;
+            if (distancia < 1) {
+                menor1++;
             } else {
-                if (distancia > 5 && distancia <= 10) {
-                    de5a10++;
+                if (distancia > 1 && distancia <= 2) {
+                    de1a2++;
                 } else {
-                    if (distancia > 10 && distancia <= 20) {
-                        de10a20++;
+                    if (distancia > 2 && distancia <= 3) {
+                        de2a3++;
                     } else {
-                        if (distancia > 20 && distancia <= 30) {
-                            de20a30++;
+                        if (distancia > 3 && distancia <=4) {
+                            de3a4++;
                         } else {
-                            if (distancia > 30 && distancia <= 40) {
-                                de30a40++;
+                            if (distancia > 4 && distancia <= 5) {
+                                de4a5++;
                             } else {
-                                if (distancia > 40 && distancia <= 50) {
-                                    de40a50++;
-                                } else {
-                                    mas50++;
-                                }
+                                mayor5++;
                             }
                         }
                     }
@@ -81,13 +82,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.d(tag, "Media de error: " + (sumaDistancias / veces));
-        Log.d(tag, "Distancias menores de 5m:   " + de0a5);
-        Log.d(tag, "Distancias entre 5m y 10m:  " + de5a10);
-        Log.d(tag, "Distancias entre 10m y 20m: " + de10a20);
-        Log.d(tag, "Distancias entre 20m y 30m: " + de20a30);
-        Log.d(tag, "Distancias entre 30m y 40m: " + de30a40);
-        Log.d(tag, "Distancias entre 40m y 50m: " + de40a50);
-        Log.d(tag, "Distancias de mas de 50m:   " + mas50);
+        Log.d(tag, "Distancias menores de 1m:   " + menor1);
+        Log.d(tag, "Distancias entre 1m y 2m:  " + de1a2);
+        Log.d(tag, "Distancias entre 2m y 3m: " + de2a3);
+        Log.d(tag, "Distancias entre 3m y 4m: " + de3a4);
+        Log.d(tag, "Distancias entre 4m y 5m: " + de4a5);
+        Log.d(tag, "Distancias de mas de 5m:   " + mayor5);
         Log.d(tag, "GRID ERRONEOS:" + error);
     }
 }
