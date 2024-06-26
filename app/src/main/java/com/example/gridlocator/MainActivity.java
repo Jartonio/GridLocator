@@ -1,7 +1,6 @@
 package com.example.gridlocator;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,33 +13,37 @@ public class MainActivity extends AppCompatActivity {
 
         double longitudInicial, latitudInicial, distancia;
 
-        String grid, tag = "Log.GridLocator";
+        String tag = "Log.GridLocator";
 
         double sumaDistancias = 0;
-        double menor1=0;
-        double de1a2=0;
-        double de2a3=0;
-        double de3a4=0;
-        double de4a5=0;
-        double mayor5=0;
-
-        long veces = 100000;
+        double menor1 = 0;
+        double de1a2 = 0;
+        double de2a3 = 0;
+        double de3a4 = 0;
+        double de4a5 = 0;
+        double mayor5 = 0;
 
         GridLocator miGridLocator = new GridLocator();
+
+
+        int veces = 100000;
         int error = 0;
+
         for (int i = 1; i <= veces; i++) {
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-           // latitudInicial= 0.0;
-            //longitudInicial=0.0;
+            //latitudInicial= 0.09951368952867218;
+            //longitudInicial= 33.313523301259934;
+
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
 
-            //Log.d(tag, "Coordenadas: "+ latitudInicial+", "+longitudInicial);
-            //Log.d(tag, "Grid: "+ miGridLocator.getGridLocator());
-            //Log.d(tag, "Coordenadas Grid: "+ miGridLocator.getCoodenadasGrid());
-            //Log.d(tag, "------------------------------------------");
-
+            /*
+            Log.d(tag, "Coordenadas:      "+ latitudInicial+", "+longitudInicial);
+            Log.d(tag, "Grid: "+ miGridLocator.getGridLocator());
+            Log.d(tag, "Coordenadas Grid: "+ miGridLocator.getCoodenadasGrid());
+            Log.d(tag, "------------------------------------------");
+            */
             distancia = miGridLocator.getDesviacion();
             sumaDistancias = sumaDistancias + distancia;
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     if (distancia > 2 && distancia <= 3) {
                         de2a3++;
                     } else {
-                        if (distancia > 3 && distancia <=4) {
+                        if (distancia > 3 && distancia <= 4) {
                             de3a4++;
                         } else {
                             if (distancia > 4 && distancia <= 5) {
@@ -67,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             char[] miGrid = miGridLocator.getGridLocator().toCharArray();
-            double longitud, lo0, lo2, lo4, lo6, lo8;
-            double latitud, la1, la3, la5, la7, la9;
 
             if (miGrid[0] < 'A' || miGrid[0] > 'R' || miGrid[1] < 'A' || miGrid[1] > 'R' ||
                     miGrid[2] < '0' || miGrid[2] > '9' || miGrid[3] < '0' || miGrid[3] > '9' ||
@@ -77,10 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     miGrid[8] < 'A' || miGrid[8] > 'X' || miGrid[9] < 'A' || miGrid[9] > 'X') {
                 error++;
             }
-
-
         }
-
         Log.d(tag, "Media de error: " + (sumaDistancias / veces));
         Log.d(tag, "Distancias menores de 1m:   " + menor1);
         Log.d(tag, "Distancias entre 1m y 2m:  " + de1a2);
