@@ -36,4 +36,4 @@ public class GeoUtilidades {
             return (float)(R * c * 1000); // Distancia en metros
         }
     }
-}
+
