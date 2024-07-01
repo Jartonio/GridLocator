@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         double longitudInicial, latitudInicial, distancia;
 
         String tag = "Log.GridLocator";
@@ -26,25 +27,26 @@ public class MainActivity extends AppCompatActivity {
         GridLocator miGridLocator = new GridLocator();
 
 
-        int veces = 100000;
+        int veces = 10;
         int error = 0;
 
         for (int i = 1; i <= veces; i++) {
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            //latitudInicial= 0.09951368952867218;
-            //longitudInicial= 33.313523301259934;
+            //latitudInicial= 12;
+            //longitudInicial= -12;
 
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
 
-            /*
+
             Log.d(tag, "Coordenadas:      "+ latitudInicial+", "+longitudInicial);
             Log.d(tag, "Grid: "+ miGridLocator.getGridLocator());
-            Log.d(tag, "Coordenadas Grid: "+ miGridLocator.getCoodenadasGrid());
+            miGridLocator.setGridLocator(miGridLocator.getGridLocator());
+            Log.d(tag, "Coordenadas Grid: "+ GeoUtilidades.formatearCoordenadas(miGridLocator.getLatitud(),miGridLocator.getLonguitud()));
             Log.d(tag, "------------------------------------------");
-            */
-            distancia = miGridLocator.getDesviacion();
+
+            distancia = GeoUtilidades.calculateDistancia(latitudInicial,longitudInicial,miGridLocator.getLatitud(),miGridLocator.getLonguitud());
             sumaDistancias = sumaDistancias + distancia;
 
             if (distancia < 1) {
@@ -69,15 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            char[] miGrid = miGridLocator.getGridLocator().toCharArray();
 
-            if (miGrid[0] < 'A' || miGrid[0] > 'R' || miGrid[1] < 'A' || miGrid[1] > 'R' ||
-                    miGrid[2] < '0' || miGrid[2] > '9' || miGrid[3] < '0' || miGrid[3] > '9' ||
-                    miGrid[4] < 'A' || miGrid[4] > 'X' || miGrid[5] < 'A' || miGrid[5] > 'X' ||
-                    miGrid[6] < '0' || miGrid[6] > '9' || miGrid[7] < '0' || miGrid[7] > '9' ||
-                    miGrid[8] < 'A' || miGrid[8] > 'X' || miGrid[9] < 'A' || miGrid[9] > 'X') {
-                error++;
-            }
         }
         Log.d(tag, "Media de error: " + (sumaDistancias / veces));
         Log.d(tag, "Distancias menores de 1m:   " + menor1);
@@ -86,6 +80,5 @@ public class MainActivity extends AppCompatActivity {
         Log.d(tag, "Distancias entre 3m y 4m: " + de3a4);
         Log.d(tag, "Distancias entre 4m y 5m: " + de4a5);
         Log.d(tag, "Distancias de mas de 5m:   " + mayor5);
-        Log.d(tag, "GRID ERRONEOS:" + error);
     }
 }

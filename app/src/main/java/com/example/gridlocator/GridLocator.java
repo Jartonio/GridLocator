@@ -1,52 +1,75 @@
 package com.example.gridlocator;
 
-import java.math.BigDecimal;
+import android.util.Log;
 
 public class GridLocator {
 
-    private double latitud, longuitud, desviacion;
-    private BigDecimal latitudGrid, longuitudGrid;
+    private double latitud, longuitud;
     private String gridLocator;
 
     public GridLocator() {
+        this.latitud = 0.0;
+        this.longuitud = 0.0;
+        this.gridLocator = "JJ00AA00AA00";
     }
 
-    public void setLatitudLonguitud(double latitud, double longuitud) {
-        this.latitud = latitud;
-        this.longuitud = longuitud;
-        gridLocator = calcularGrid(latitud, longuitud);
-        desviacion = calcularMetrosDesviacion();
+
+    public void setLatitudLonguitud(double miLatitud, double miLonguitud) {
+
+        if (miLatitud >= -90.0 && miLatitud <= 90.0 && miLonguitud >= -180.0 && miLonguitud <= 180.0) {
+            this.latitud = miLatitud;
+            this.longuitud = miLonguitud;
+            calcularGrid();
+        } else {
+            Log.d("Log.GridLocator", "Error en las coordenadas.");
+            this.latitud = 0.0;
+            this.longuitud = 0.0;
+            this.gridLocator = "ERROR";
+
+        }
+    }
+
+    public void setGridLocator(String grid) {
+        char[] miGrid = grid.toCharArray();
+
+        if (miGrid[0] < 'A' || miGrid[0] > 'R' || miGrid[1] < 'A' || miGrid[1] > 'R' ||
+                miGrid[2] < '0' || miGrid[2] > '9' || miGrid[3] < '0' || miGrid[3] > '9' ||
+                miGrid[4] < 'A' || miGrid[4] > 'X' || miGrid[5] < 'A' || miGrid[5] > 'X' ||
+                miGrid[6] < '0' || miGrid[6] > '9' || miGrid[7] < '0' || miGrid[7] > '9' ||
+                miGrid[8] < 'A' || miGrid[8] > 'X' || miGrid[9] < 'A' || miGrid[9] > 'X' ||
+                miGrid.length!=12){
+            Log.d("Log.GridLocator", "Error Grid Locator.");
+            this.latitud = 0.0;
+            this.longuitud = 0.0;
+
+        } else {
+            this.gridLocator = grid;
+            calcularLatitudGrid();
+            calcularLongitudGrid();
+        }
     }
 
 
     public String getGridLocator() {
-        return gridLocator;
+        return this.gridLocator;
     }
 
 
-    public BigDecimal getLatitudGrid() {
-        return latitudGrid;
+    public double getLatitud() {
+        return this.latitud;
     }
 
-    public BigDecimal getLonguitudGrid() {
-        return longuitudGrid;
+    public double getLonguitud() {
+        return this.longuitud;
     }
 
-    public double getDesviacion() {
-        return desviacion;
-    }
-
-    public String getCoodenadasGrid() {
-        return latitudGrid + ", " + longuitudGrid;
-    }
-
-    private String calcularGrid(double latitudInicial, double longitudInicial) {
+    private void calcularGrid() {
 
         //Este metodo calcula el Grid Locator de Maidenhead a partir de una latitud y una longuitud.
         //Entrega un Grid en formato: AA00AA00AA00 (18x10x24x10x24x10).
 
-        double longitud = longitudInicial + 180;
-        double latitud = latitudInicial + 90;
+        double miLongitud = longuitud + 180;
+        double miLatitud = latitud + 90;
 
         double grados, totalCuadros, ultimo, diferenciaCuadros;
         int cuadrosAnteriores, numeroGrid, divisiones;
@@ -56,7 +79,7 @@ public class GridLocator {
         // longitud cuadricula 1
         divisiones = 18;
         grados = 360f / divisiones;
-        totalCuadros = longitud / grados;
+        totalCuadros = miLongitud / grados;
         numeroGrid = (int) totalCuadros;
         grid[0] = (char) ('A' + numeroGrid);
         ultimo = totalCuadros;
@@ -64,7 +87,7 @@ public class GridLocator {
         //longitud cuadricula 2
         divisiones = 10;
         grados = grados / divisiones;
-        totalCuadros = longitud / grados;
+        totalCuadros = miLongitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -75,7 +98,7 @@ public class GridLocator {
         divisiones = 24;
         grados = grados / divisiones;
 
-        totalCuadros = longitud / grados;
+        totalCuadros = miLongitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -85,7 +108,7 @@ public class GridLocator {
         //longitud cuadricula 4
         divisiones = 10;
         grados = grados / divisiones;
-        totalCuadros = longitud / grados;
+        totalCuadros = miLongitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -95,7 +118,7 @@ public class GridLocator {
         //longitud cuadricula 5
         divisiones = 24;
         grados = grados / divisiones;
-        totalCuadros = longitud / grados;
+        totalCuadros = miLongitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -105,7 +128,7 @@ public class GridLocator {
         //longitud cuadricula 6
         divisiones = 10;
         grados = grados / divisiones;
-        totalCuadros = longitud / grados;
+        totalCuadros = miLongitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -115,7 +138,7 @@ public class GridLocator {
         // latitud cadricula 1
         divisiones = 18;
         grados = 180f / divisiones;
-        totalCuadros = latitud / grados;
+        totalCuadros = miLatitud / grados;
         numeroGrid = (int) totalCuadros;
         grid[1] = (char) ('A' + numeroGrid);
         ultimo = totalCuadros;
@@ -123,7 +146,7 @@ public class GridLocator {
         //latitud cuadricula 2
         divisiones = 10;
         grados = grados / divisiones;
-        totalCuadros = latitud / grados;
+        totalCuadros = miLatitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -133,7 +156,7 @@ public class GridLocator {
         //latitud cuadricula 3
         divisiones = 24;
         grados = grados / divisiones;
-        totalCuadros = latitud / grados;
+        totalCuadros = miLatitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -143,7 +166,7 @@ public class GridLocator {
         //latitud cuadricula 4
         divisiones = 10;
         grados = grados / divisiones;
-        totalCuadros = latitud / grados;
+        totalCuadros = miLatitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -153,7 +176,7 @@ public class GridLocator {
         //latitud cuadricula 5
         divisiones = 24;
         grados = grados / divisiones;
-        totalCuadros = latitud / grados;
+        totalCuadros = miLatitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
@@ -163,22 +186,20 @@ public class GridLocator {
         //latitud cuadricula 6
         divisiones = 10;
         grados = grados / divisiones;
-        totalCuadros = latitud / grados;
+        totalCuadros = miLatitud / grados;
         cuadrosAnteriores = ((int) (ultimo)) * divisiones;
         diferenciaCuadros = totalCuadros - cuadrosAnteriores;
         numeroGrid = (int) diferenciaCuadros;
         grid[11] = (char) ('0' + numeroGrid);
-
-        return String.valueOf(grid);
+        this.gridLocator = String.valueOf(grid);
     }
 
-
-    private BigDecimal obtenerLongitudGrid() {
+    private void calcularLongitudGrid() {
 
         //Este metodo devuelve la longitud a partir de un grid.
 
         char[] miGrid = gridLocator.toCharArray();
-        double longitud, lo0, lo2, lo4, lo6, lo8, lo10;
+        double miLongitud, lo0, lo2, lo4, lo6, lo8, lo10;
 
         lo0 = (miGrid[0] - 'A') * ((double) 360 / 18);
         lo2 = (miGrid[2] - '0') * ((double) 360 / 18 / 10);
@@ -186,55 +207,25 @@ public class GridLocator {
         lo6 = (miGrid[6] - '0') * ((double) 360 / 18 / 10 / 24 / 10);
         lo8 = (miGrid[8] - 'A') * ((double) 360 / 18 / 10 / 24 / 10 / 24);
         lo10 = (miGrid[10] - '0') * ((double) 360 / 18 / 10 / 24 / 10 / 24 / 10);
-        longitud = (lo0 + lo2 + lo4 + lo6 + lo8 + lo10) - 180;
-        longitud = longitud + (((double) 360 / 18 / 10 / 24 / 10 / 24 / 10) / 2);
-        longuitudGrid = BigDecimal.valueOf(longitud);
-        return BigDecimal.valueOf(longitud);
-
+        miLongitud = (lo0 + lo2 + lo4 + lo6 + lo8 + lo10) - 180;
+        miLongitud = miLongitud + (((double) 360 / 18 / 10 / 24 / 10 / 24 / 10) / 2);
+        this.longuitud = miLongitud;
     }
 
-    private BigDecimal obtenerLatitudGrid() {
+    private void calcularLatitudGrid() {
 
         //Este metodo devuelve la latitud a partir de un grid.
 
         char[] miGrid = gridLocator.toCharArray();
-        double latitud, la1, la3, la5, la7, la9, la11;
+        double miLatitud, la1, la3, la5, la7, la9, la11;
         la1 = (miGrid[1] - 'A') * ((double) 180 / 18);
         la3 = (miGrid[3] - '0') * ((double) 180 / 18 / 10);
         la5 = (miGrid[5] - 'A') * ((double) 180 / 18 / 10 / 24);
         la7 = (miGrid[7] - '0') * ((double) 180 / 18 / 10 / 24 / 10);
         la9 = (miGrid[9] - 'A') * ((double) 180 / 18 / 10 / 24 / 10 / 24);
         la11 = (miGrid[11] - '0') * ((double) 180 / 18 / 10 / 24 / 10 / 24 / 10);
-        latitud = (la1 + la3 + la5 + la7 + la9 + la11) - 90;
-        latitud = latitud + (((double) 180 / 18 / 10 / 24 / 10 / 24 / 10) / 2);
-        latitudGrid = BigDecimal.valueOf(latitud);
-        return BigDecimal.valueOf(latitud);
+        miLatitud = (la1 + la3 + la5 + la7 + la9 + la11) - 90;
+        miLatitud = miLatitud + (((double) 180 / 18 / 10 / 24 / 10 / 24 / 10) / 2);
+        this.latitud = miLatitud;
     }
-
-
-    private double calcularMetrosDesviacion() {
-
-        double radioTierra = 6371.0; // Radio de la Tierra en kilómetros
-
-        // Convertir las coordenadas de grados a radianes
-        double latitud1Rad = Math.toRadians(latitud);
-        double longitud1Rad = Math.toRadians(longuitud);
-        double latitud2Rad = Math.toRadians(obtenerLatitudGrid().doubleValue());
-        double longitud2Rad = Math.toRadians(obtenerLongitudGrid().doubleValue());
-
-        // Calcular la diferencia entre las longitudes y latitudes
-        double diferenciaLatitud = latitud2Rad - latitud1Rad;
-        double diferenciaLongitud = longitud2Rad - longitud1Rad;
-
-        // Calcular la distancia utilizando la fórmula de Haversine
-        double a = Math.pow(Math.sin(diferenciaLatitud / 2), 2) + Math.cos(latitud1Rad) * Math.cos(latitud2Rad) * Math.pow(Math.sin(diferenciaLongitud / 2), 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        // Calcular la distancia en metros
-        double distanciaEnKilometros = radioTierra * c;
-
-        return distanciaEnKilometros * 1000; // Convertir a metros
-    }
-
-
 }
