@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
         }
         Log.d(tag, "Media de error: " + (sumaDistancias / veces));
         Log.d(tag, "Distancias menores de 1m:   " + menor1);
