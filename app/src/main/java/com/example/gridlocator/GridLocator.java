@@ -1,6 +1,5 @@
 package com.example.gridlocator;
 
-import android.util.Log;
 
 public class GridLocator {
 
@@ -20,8 +19,6 @@ public class GridLocator {
     }
 
     public void setGridLocator(String grid) {
-
-        char[] miGrid = grid.toCharArray();
 
         this.gridLocator = grid;
         calcularLatitudGrid();

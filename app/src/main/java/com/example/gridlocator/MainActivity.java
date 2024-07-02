@@ -1,6 +1,5 @@
 package com.example.gridlocator;
 
-import android.hardware.GeomagneticField;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,11 +28,7 @@ public class MainActivity extends AppCompatActivity {
         double de4a5 = 0;
         double mayor5 = 0;
 
-        //Guardia Cilvil Potes
-
-
         GridLocator miGridLocator = new GridLocator();
-
 
         int veces = 1;
         int erroresDeGrid = 0;
