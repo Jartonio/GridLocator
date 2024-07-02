@@ -1,5 +1,7 @@
 package com.example.gridlocator;
 
+import android.hardware.GeomagneticField;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -43,6 +45,12 @@ public class GeoUtilidades {
         miBidRound =  miBigDecimal.setScale(decimales, RoundingMode.HALF_UP);
         miLonguitudString=miBidRound.toString();
         return (miLatitudString+", "+miLonguitudString);
+    }
+
+    public static double calcularDerivacion(double lat, double lon){
+        long altura=0;
+        GeomagneticField miGeo= new GeomagneticField((float)lat,(float)lon,altura,System.currentTimeMillis());
+        return miGeo.getDeclination();
     }
 }
 

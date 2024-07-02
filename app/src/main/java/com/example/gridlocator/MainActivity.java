@@ -1,5 +1,6 @@
 package com.example.gridlocator;
 
+import android.hardware.GeomagneticField;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         double longitudInicial, latitudInicial, precision, latitudGridLocator, longuitudGridLocator;
-        double latitudObservador, longuitudObservador, rumbo;
+        double latitudObservador, longuitudObservador, rumbo, rumboFinal,declinacion;
         int distancia;
 
         String gridLocator;
@@ -35,15 +36,15 @@ public class MainActivity extends AppCompatActivity {
         GridLocator miGridLocator = new GridLocator();
 
 
-        int veces = 1;
+        int veces = 10;
         int erroresDeGrid = 0;
 
         for (int i = 1; i <= veces; i++) {
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            latitudInicial = 39.16208362761562;
-            longitudInicial = -94.62198479543943;
+            //latitudInicial = 39.16208362761562;
+            //longitudInicial = -94.62198479543943;
 
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
 
@@ -63,13 +64,19 @@ public class MainActivity extends AppCompatActivity {
             rumbo = GeoUtilidades.calcularRumbo(latitudObservador, longuitudObservador, latitudGridLocator, longuitudGridLocator);
 
             distancia = (int) GeoUtilidades.calcularDistancia(latitudObservador, longuitudObservador, latitudGridLocator, longuitudGridLocator);
+            declinacion=GeoUtilidades.calcularDerivacion(latitudObservador, longuitudObservador);
+            rumboFinal=rumbo+declinacion;
 
             Log.d(TAG, "Coordenadas del observador: " + latitudObservador + ", " + longuitudObservador);
             Log.d(TAG, "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
             Log.d(TAG, "Coordenadas obtenidas: " + latitudGridLocator + ", " + longuitudGridLocator);
             Log.d(TAG, "Grid Locator: " + gridLocator);
             Log.d(TAG, "Distancia: " + distancia);
+            Log.d(TAG, "Declinacion: "+ declinacion);
             Log.d(TAG, "Rumbo: " + rumbo);
+            Log.d(TAG, "Rumbo final: "+ rumboFinal);
+
+
             Log.d(TAG, "------------------------------------------");
 
             sumaDistancias = sumaDistancias + precision;
