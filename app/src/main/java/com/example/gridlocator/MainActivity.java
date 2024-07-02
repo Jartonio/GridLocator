@@ -1,10 +1,8 @@
 package com.example.gridlocator;
 
-import androidx.annotation.LongDef;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         double mayor5 = 0;
 
         //Guardia Cilvil Potes
-        latitudObservador = 43.153267133218144;
-        longuitudObservador = -4.622447443160071;
+        latitudObservador =47.80662033104915;
+        longuitudObservador = 107.52912113350052;
 
         GridLocator miGridLocator = new GridLocator();
 
@@ -44,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            latitudInicial = 42.63112275820696;
-            longitudInicial = 0.6566023635214332;
+            latitudInicial = 39.16208362761562;
+            longitudInicial = -94.62198479543943;
 
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
 
