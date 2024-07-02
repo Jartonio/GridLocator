@@ -13,47 +13,24 @@ public class GridLocator {
         this.gridLocator = "JJ00AA00AA00";
     }
 
-
     public void setLatitudLonguitud(double miLatitud, double miLonguitud) {
-
-        if (miLatitud >= -90.0 && miLatitud <= 90.0 && miLonguitud >= -180.0 && miLonguitud <= 180.0) {
-            this.latitud = miLatitud;
-            this.longuitud = miLonguitud;
-            calcularGrid();
-        } else {
-            Log.d("Log.GridLocator", "Error en las coordenadas.");
-            this.latitud = 0.0;
-            this.longuitud = 0.0;
-            this.gridLocator = "ERROR";
-
-        }
+        this.latitud = miLatitud;
+        this.longuitud = miLonguitud;
+        calcularGrid();
     }
 
     public void setGridLocator(String grid) {
+
         char[] miGrid = grid.toCharArray();
 
-        if (miGrid[0] < 'A' || miGrid[0] > 'R' || miGrid[1] < 'A' || miGrid[1] > 'R' ||
-                miGrid[2] < '0' || miGrid[2] > '9' || miGrid[3] < '0' || miGrid[3] > '9' ||
-                miGrid[4] < 'A' || miGrid[4] > 'X' || miGrid[5] < 'A' || miGrid[5] > 'X' ||
-                miGrid[6] < '0' || miGrid[6] > '9' || miGrid[7] < '0' || miGrid[7] > '9' ||
-                miGrid[8] < 'A' || miGrid[8] > 'X' || miGrid[9] < 'A' || miGrid[9] > 'X' ||
-                miGrid.length!=12){
-            Log.d("Log.GridLocator", "Error Grid Locator.");
-            this.latitud = 0.0;
-            this.longuitud = 0.0;
-
-        } else {
-            this.gridLocator = grid;
-            calcularLatitudGrid();
-            calcularLongitudGrid();
-        }
+        this.gridLocator = grid;
+        calcularLatitudGrid();
+        calcularLongitudGrid();
     }
-
 
     public String getGridLocator() {
         return this.gridLocator;
     }
-
 
     public double getLatitud() {
         return this.latitud;
@@ -61,6 +38,31 @@ public class GridLocator {
 
     public double getLonguitud() {
         return this.longuitud;
+    }
+
+    public boolean coordenadasValidas(double miLatitud, double miLonguitud) {
+        if (miLatitud >= -90.0 && miLatitud <= 90.0 && miLonguitud >= -180.0 && miLonguitud <= 180.0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean gridValido(String miGridLocator) {
+
+        char[] miGrid = miGridLocator.toCharArray();
+
+        if (miGrid[0] < 'A' || miGrid[0] > 'R' || miGrid[1] < 'A' || miGrid[1] > 'R' ||
+                miGrid[2] < '0' || miGrid[2] > '9' || miGrid[3] < '0' || miGrid[3] > '9' ||
+                miGrid[4] < 'A' || miGrid[4] > 'X' || miGrid[5] < 'A' || miGrid[5] > 'X' ||
+                miGrid[6] < '0' || miGrid[6] > '9' || miGrid[7] < '0' || miGrid[7] > '9' ||
+                miGrid[8] < 'A' || miGrid[8] > 'X' || miGrid[9] < 'A' || miGrid[9] > 'X' ||
+                miGrid.length != 12) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     private void calcularGrid() {
@@ -195,7 +197,6 @@ public class GridLocator {
     }
 
     private void calcularLongitudGrid() {
-
         //Este metodo devuelve la longitud a partir de un grid.
 
         char[] miGrid = gridLocator.toCharArray();
@@ -208,16 +209,16 @@ public class GridLocator {
         lo8 = (miGrid[8] - 'A') * ((double) 360 / 18 / 10 / 24 / 10 / 24);
         lo10 = (miGrid[10] - '0') * ((double) 360 / 18 / 10 / 24 / 10 / 24 / 10);
         miLongitud = (lo0 + lo2 + lo4 + lo6 + lo8 + lo10) - 180;
-        miLongitud = miLongitud + (((double) 360 / 18 / 10 / 24 / 10 / 24 / 10) / 2);
+        miLongitud = miLongitud + (((double) 360 / 18 / 10 / 24 / 10 / 24 / 10) / 2);//Se divide entre 2 para centrar a la cuadricula final
         this.longuitud = miLongitud;
     }
 
     private void calcularLatitudGrid() {
-
         //Este metodo devuelve la latitud a partir de un grid.
 
         char[] miGrid = gridLocator.toCharArray();
         double miLatitud, la1, la3, la5, la7, la9, la11;
+
         la1 = (miGrid[1] - 'A') * ((double) 180 / 18);
         la3 = (miGrid[3] - '0') * ((double) 180 / 18 / 10);
         la5 = (miGrid[5] - 'A') * ((double) 180 / 18 / 10 / 24);
@@ -225,7 +226,7 @@ public class GridLocator {
         la9 = (miGrid[9] - 'A') * ((double) 180 / 18 / 10 / 24 / 10 / 24);
         la11 = (miGrid[11] - '0') * ((double) 180 / 18 / 10 / 24 / 10 / 24 / 10);
         miLatitud = (la1 + la3 + la5 + la7 + la9 + la11) - 90;
-        miLatitud = miLatitud + (((double) 180 / 18 / 10 / 24 / 10 / 24 / 10) / 2);
+        miLatitud = miLatitud + (((double) 180 / 18 / 10 / 24 / 10 / 24 / 10) / 2);//Se divide entre 2 para centrar a la cuadricula final
         this.latitud = miLatitud;
     }
 }
