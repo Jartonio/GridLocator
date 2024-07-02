@@ -30,21 +30,24 @@ public class MainActivity extends AppCompatActivity {
         double mayor5 = 0;
 
         //Guardia Cilvil Potes
-        latitudObservador =47.80662033104915;
-        longuitudObservador = 107.52912113350052;
+
 
         GridLocator miGridLocator = new GridLocator();
 
 
-        int veces = 10;
+        int veces = 1;
         int erroresDeGrid = 0;
 
         for (int i = 1; i <= veces; i++) {
+            latitudObservador =GenerarCoordenadasAleatorias.latitudAleatoria();
+            longuitudObservador = GenerarCoordenadasAleatorias.longitudAleatoria();
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            //latitudInicial = 39.16208362761562;
-            //longitudInicial = -94.62198479543943;
+            latitudObservador=28.370448199705887;
+            longuitudObservador=-16.84997473238369;
+            latitudInicial = 28.274177430463826;
+            longitudInicial = -16.629580431519543;
 
             miGridLocator.setLatitudLonguitud(latitudInicial, longitudInicial);
 
@@ -67,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
             declinacion=GeoUtilidades.calcularDerivacion(latitudObservador, longuitudObservador);
             rumboFinal=rumbo+declinacion;
 
-            Log.d(TAG, "Coordenadas del observador: " + latitudObservador + ", " + longuitudObservador);
-            Log.d(TAG, "Coordenadas iniciales: " + latitudInicial + ", " + longitudInicial);
-            Log.d(TAG, "Coordenadas obtenidas: " + latitudGridLocator + ", " + longuitudGridLocator);
+            Log.d(TAG, "Coordenadas del observador: " + latitudObservador + " " + longuitudObservador);
+            Log.d(TAG, "Coordenadas iniciales: " + latitudInicial + " " + longitudInicial);
+            Log.d(TAG, "Coordenadas obtenidas: " + latitudGridLocator + " " + longuitudGridLocator);
             Log.d(TAG, "Grid Locator: " + gridLocator);
             Log.d(TAG, "Distancia: " + distancia);
             Log.d(TAG, "Declinacion: "+ declinacion);
