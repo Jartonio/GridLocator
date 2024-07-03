@@ -42,6 +42,83 @@ public class MainActivity extends AppCompatActivity {
 
         String gridLocator;
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if (brujula.brujulaPresente()) {
+        brujula.start();
+        startUpdatingDegrees();
+        //}
+        isAppInForeground = true;
+        gps.startListening();
+        startUpdatingLocation();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //if (brujula.brujulaPresente()) {
+        brujula.stop();
+        stopUpdatingDegrees();
+        // }
+        isAppInForeground = false;
+        gps.stopListening();
+        stopUpdatingLocation();
+
+    }
+
+    private void startUpdatingLocation() {
+        handlerGPS.post(updateLocationRunnable);
+    }
+
+    private void stopUpdatingLocation() {
+        handlerGPS.removeCallbacks(updateLocationRunnable);
+    }
+
+
+    private void startUpdatingDegrees() {
+        handlerGrados.post(updateDegreesRunnable);
+    }
+
+    private void stopUpdatingDegrees() {
+        handlerGrados.removeCallbacks(updateDegreesRunnable);
+    }
+
+    private final Runnable updateLocationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isAppInForeground) {
+                Location location = gps.getCurrentLocation();
+                if (location != null) {
+                    Log.d(TAG, "Coordenadas GPS: " + location.getLatitude() + ", " + location.getLongitude());
+                } else {
+                    Log.d(TAG, "Coordenadas GPS no disponibles.");
+                }
+            }
+            handlerGPS.postDelayed(this, 1000); // Actualizar cada 5000ms (5 segundos)
+        }
+    };
+
+    private final Runnable updateDegreesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isAppInForeground) {
+                if (brujula.brujulaPresente()) {
+                    gradosBrujula = String.format("%.2f°", brujula.getGrados());
+                    Log.d(TAG, "Brujula: " + gradosBrujula);
+                } else {
+                    Log.d(TAG, "Este dispositivo no tiene brújula.");
+                }
+            }
+            handlerGrados.postDelayed(this, 500); // Actualizar cada 5000ms (5 segundos)
+        }
+    };
+}
+/*
+private void test{
         double sumaDistancias = 0;
         double menor1 = 0;
         double de1a2 = 0;
@@ -132,80 +209,4 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Distancias de mas de 5m:   " + mayor5);
         Log.d(TAG, "Errores de Grid: " + erroresDeGrid);
         Log.d(TAG, "Brujula: " + gradosBrujula);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //if (brujula.brujulaPresente()) {
-        brujula.start();
-        startUpdatingDegrees();
-        //}
-        isAppInForeground = true;
-        gps.startListening();
-        startUpdatingLocation();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //if (brujula.brujulaPresente()) {
-        brujula.stop();
-        stopUpdatingDegrees();
-        // }
-        isAppInForeground = false;
-        gps.stopListening();
-        stopUpdatingLocation();
-
-    }
-
-    private void startUpdatingLocation() {
-        handlerGPS.post(updateLocationRunnable);
-    }
-
-    private void stopUpdatingLocation() {
-        handlerGPS.removeCallbacks(updateLocationRunnable);
-    }
-
-
-    private void startUpdatingDegrees() {
-        handlerGrados.post(updateDegreesRunnable);
-    }
-
-    private void stopUpdatingDegrees() {
-        handlerGrados.removeCallbacks(updateDegreesRunnable);
-    }
-
-    private final Runnable updateLocationRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (isAppInForeground) {
-                Location location = gps.getCurrentLocation();
-                if (location != null) {
-                    Log.d(TAG, "Coordenadas GPS: " + location.getLatitude() + ", " + location.getLongitude());
-                } else {
-                    Log.d(TAG, "Coordenadas GPS no disponibles.");
-                }
-            }
-            handlerGPS.postDelayed(this, 1000); // Actualizar cada 5000ms (5 segundos)
-        }
-    };
-
-    private final Runnable updateDegreesRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (isAppInForeground) {
-                if (brujula.brujulaPresente()) {
-                    gradosBrujula = String.format("%.2f°", brujula.getGrados());
-                    Log.d(TAG, "Brujula: " + gradosBrujula);
-                } else {
-                    Log.d(TAG, "Este dispositivo no tiene brújula.");
-                }
-            }
-            handlerGrados.postDelayed(this, 500); // Actualizar cada 5000ms (5 segundos)
-        }
-    };
-
-
-}
+    }*/
