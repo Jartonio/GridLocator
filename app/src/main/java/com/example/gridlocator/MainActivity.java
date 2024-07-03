@@ -1,10 +1,22 @@
 package com.example.gridlocator;
 
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Brujula brujula;
+    private GPS gps;
+    private String gradosBrujula;
+    private final String TAG = "Log.GridLocator";
+
+    private Handler handlerGPS, handlerGrados;
+    private boolean isAppInForeground = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -12,13 +24,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        brujula = new Brujula(this);
+        gps = new GPS(this);
+
+        handlerGPS = new Handler(Looper.getMainLooper());
+        handlerGrados = new Handler(Looper.getMainLooper());
+
+
+        if (!brujula.brujulaPresente()) {
+            Log.d(TAG, "ERROR, este terminal no tiene la brujula disponible.");
+        }
+
+
         double longitudInicial, latitudInicial, precision, latitudGridLocator, longuitudGridLocator;
-        double latitudObservador, longuitudObservador, rumbo, rumboFinal,declinacion;
+        double latitudObservador, longuitudObservador, azimut, rumboFinal, declinacion;
         int distancia;
 
         String gridLocator;
-
-        String TAG = "Log.GridLocator";
 
         double sumaDistancias = 0;
         double menor1 = 0;
@@ -34,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
         int erroresDeGrid = 0;
 
         for (int i = 1; i <= veces; i++) {
-            latitudObservador =GenerarCoordenadasAleatorias.latitudAleatoria();
+            latitudObservador = GenerarCoordenadasAleatorias.latitudAleatoria();
             longuitudObservador = GenerarCoordenadasAleatorias.longitudAleatoria();
             latitudInicial = GenerarCoordenadasAleatorias.latitudAleatoria();
             longitudInicial = GenerarCoordenadasAleatorias.longitudAleatoria();
 
-            latitudObservador=28.370448199705887;
-            longuitudObservador=-16.84997473238369;
+            latitudObservador = 28.370448199705887;
+            longuitudObservador = -16.84997473238369;
             latitudInicial = 28.274177430463826;
             longitudInicial = -16.629580431519543;
 
@@ -48,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
             gridLocator = miGridLocator.getGridLocator();
 
-            if (!miGridLocator.gridValido(gridLocator)){
+            if (!miGridLocator.gridValido(gridLocator)) {
                 erroresDeGrid++;
             }
 
@@ -59,20 +81,20 @@ public class MainActivity extends AppCompatActivity {
 
             precision = GeoUtilidades.calcularDistancia(latitudInicial, longitudInicial, latitudGridLocator, longuitudGridLocator);
 
-            rumbo = GeoUtilidades.calcularRumbo(latitudObservador, longuitudObservador, latitudGridLocator, longuitudGridLocator);
+            azimut = GeoUtilidades.calcularAzimut(latitudObservador, longuitudObservador, latitudGridLocator, longuitudGridLocator);
 
             distancia = (int) GeoUtilidades.calcularDistancia(latitudObservador, longuitudObservador, latitudGridLocator, longuitudGridLocator);
-            declinacion=GeoUtilidades.calcularDerivacion(latitudObservador, longuitudObservador);
-            rumboFinal=rumbo+declinacion;
+            declinacion = GeoUtilidades.calcularDeclinacionMagnetica(latitudObservador, longuitudObservador);
+            rumboFinal = azimut + declinacion;
 
             Log.d(TAG, "Coordenadas del observador: " + latitudObservador + " " + longuitudObservador);
             Log.d(TAG, "Coordenadas iniciales: " + latitudInicial + " " + longitudInicial);
             Log.d(TAG, "Coordenadas obtenidas: " + latitudGridLocator + " " + longuitudGridLocator);
             Log.d(TAG, "Grid Locator: " + gridLocator);
             Log.d(TAG, "Distancia: " + distancia);
-            Log.d(TAG, "Declinacion: "+ declinacion);
-            Log.d(TAG, "Rumbo: " + rumbo);
-            Log.d(TAG, "Rumbo final: "+ rumboFinal);
+            Log.d(TAG, "Declinacion: " + declinacion);
+            Log.d(TAG, "Azimut: " + azimut);
+            Log.d(TAG, "Azimut final: " + rumboFinal);
 
 
             Log.d(TAG, "------------------------------------------");
@@ -108,6 +130,82 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Distancias entre 3m y 4m: " + de3a4);
         Log.d(TAG, "Distancias entre 4m y 5m: " + de4a5);
         Log.d(TAG, "Distancias de mas de 5m:   " + mayor5);
-        Log.d(TAG, "Errores de Grid: "+ erroresDeGrid);
+        Log.d(TAG, "Errores de Grid: " + erroresDeGrid);
+        Log.d(TAG, "Brujula: " + gradosBrujula);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if (brujula.brujulaPresente()) {
+        brujula.start();
+        startUpdatingDegrees();
+        //}
+        isAppInForeground = true;
+        gps.startListening();
+        startUpdatingLocation();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //if (brujula.brujulaPresente()) {
+        brujula.stop();
+        stopUpdatingDegrees();
+        // }
+        isAppInForeground = false;
+        gps.stopListening();
+        stopUpdatingLocation();
+
+    }
+
+    private void startUpdatingLocation() {
+        handlerGPS.post(updateLocationRunnable);
+    }
+
+    private void stopUpdatingLocation() {
+        handlerGPS.removeCallbacks(updateLocationRunnable);
+    }
+
+
+    private void startUpdatingDegrees() {
+        handlerGrados.post(updateDegreesRunnable);
+    }
+
+    private void stopUpdatingDegrees() {
+        handlerGrados.removeCallbacks(updateDegreesRunnable);
+    }
+
+    private final Runnable updateLocationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isAppInForeground) {
+                Location location = gps.getCurrentLocation();
+                if (location != null) {
+                    Log.d(TAG, "Coordenadas GPS: " + location.getLatitude() + ", " + location.getLongitude());
+                } else {
+                    Log.d(TAG, "Coordenadas GPS no disponibles.");
+                }
+            }
+            handlerGPS.postDelayed(this, 1000); // Actualizar cada 5000ms (5 segundos)
+        }
+    };
+
+    private final Runnable updateDegreesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isAppInForeground) {
+                if (brujula.brujulaPresente()) {
+                    gradosBrujula = String.format("%.2f°", brujula.getGrados());
+                    Log.d(TAG, "Brujula: " + gradosBrujula);
+                } else {
+                    Log.d(TAG, "Este dispositivo no tiene brújula.");
+                }
+            }
+            handlerGrados.postDelayed(this, 500); // Actualizar cada 5000ms (5 segundos)
+        }
+    };
+
+
 }

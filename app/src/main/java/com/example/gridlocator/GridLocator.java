@@ -19,7 +19,6 @@ public class GridLocator {
     }
 
     public void setGridLocator(String grid) {
-
         this.gridLocator = grid;
         calcularLatitudGrid();
         calcularLongitudGrid();

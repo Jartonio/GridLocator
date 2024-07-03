@@ -7,8 +7,8 @@ import java.math.RoundingMode;
 
 public class GeoUtilidades {
 
-    public static double calcularRumbo(double startLat, double startLng, double endLat, double endLng) {
-        // Método para calcular el rumbo (azimut) entre dos puntos.
+    public static double calcularAzimut(double startLat, double startLng, double endLat, double endLng) {
+        // Método para calcular el azimut entre dos puntos.
         double startLatRad = Math.toRadians(startLat);
         double startLngRad = Math.toRadians(startLng);
         double endLatRad = Math.toRadians(endLat);
@@ -47,10 +47,11 @@ public class GeoUtilidades {
         return (miLatitudString+", "+miLonguitudString);
     }
 
-    public static double calcularDerivacion(double lat, double lon){
+    public static double calcularDeclinacionMagnetica(double lat, double lon){
         long altura=0;
         GeomagneticField miGeo= new GeomagneticField((float)lat,(float)lon,altura,System.currentTimeMillis());
         return miGeo.getDeclination();
     }
 }
+
 
