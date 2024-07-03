@@ -34,17 +34,17 @@ public class GeoUtilidades {
         return (float)(R * c * 1000); // Distancia en metros
     }
 
-    public static String formatearCoordenadas(int decimales,double miLatitud, double miLonguitud) {
+    public static String formatearCoordenadas(int decimales,double miLatitud, double miLongitud) {
         //Metodo para dar formato y limitar los decimales de las coordenadas.
-        String miLatitudString,miLonguitudString;
+        String miLatitudString,miLongitudString;
         BigDecimal miBigDecimal;
         miBigDecimal= BigDecimal.valueOf(miLatitud);
         BigDecimal miBidRound =  miBigDecimal.setScale(decimales, RoundingMode.HALF_UP);
         miLatitudString=miBidRound.toString();
-        miBigDecimal= BigDecimal.valueOf(miLonguitud);
+        miBigDecimal= BigDecimal.valueOf(miLongitud);
         miBidRound =  miBigDecimal.setScale(decimales, RoundingMode.HALF_UP);
-        miLonguitudString=miBidRound.toString();
-        return (miLatitudString+", "+miLonguitudString);
+        miLongitudString=miBidRound.toString();
+        return (miLatitudString+", "+miLongitudString);
     }
 
     public static double calcularDeclinacionMagnetica(double lat, double lon){
@@ -53,5 +53,4 @@ public class GeoUtilidades {
         return miGeo.getDeclination();
     }
 }
-
 

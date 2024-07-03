@@ -3,18 +3,18 @@ package com.example.gridlocator;
 
 public class GridLocator {
 
-    private double latitud, longuitud;
+    private double latitud, longitud;
     private String gridLocator;
 
     public GridLocator() {
         this.latitud = 0.0;
-        this.longuitud = 0.0;
+        this.longitud = 0.0;
         this.gridLocator = "JJ00AA00AA00";
     }
 
-    public void setLatitudLonguitud(double miLatitud, double miLonguitud) {
+    public void setLatitudLongitud(double miLatitud, double miLongitud) {
         this.latitud = miLatitud;
-        this.longuitud = miLonguitud;
+        this.longitud = miLongitud;
         calcularGrid();
     }
 
@@ -32,12 +32,12 @@ public class GridLocator {
         return this.latitud;
     }
 
-    public double getLonguitud() {
-        return this.longuitud;
+    public double getLongitud() {
+        return this.longitud;
     }
 
-    public boolean coordenadasValidas(double miLatitud, double miLonguitud) {
-        if (miLatitud >= -90.0 && miLatitud <= 90.0 && miLonguitud >= -180.0 && miLonguitud <= 180.0) {
+    public boolean coordenadasValidas(double miLatitud, double miLongitud) {
+        if (miLatitud >= -90.0 && miLatitud <= 90.0 && miLongitud >= -180.0 && miLongitud <= 180.0) {
             return true;
         } else {
             return false;
@@ -63,10 +63,10 @@ public class GridLocator {
 
     private void calcularGrid() {
 
-        //Este metodo calcula el Grid Locator de Maidenhead a partir de una latitud y una longuitud.
+        //Este metodo calcula el Grid Locator de Maidenhead a partir de una latitud y una tlongiud.
         //Entrega un Grid en formato: AA00AA00AA00 (18x10x24x10x24x10).
 
-        double miLongitud = longuitud + 180;
+        double miLongitud = longitud + 180;
         double miLatitud = latitud + 90;
 
         double grados, totalCuadros, ultimo, diferenciaCuadros;
@@ -206,7 +206,7 @@ public class GridLocator {
         lo10 = (miGrid[10] - '0') * ((double) 360 / 18 / 10 / 24 / 10 / 24 / 10);
         miLongitud = (lo0 + lo2 + lo4 + lo6 + lo8 + lo10) - 180;
         miLongitud = miLongitud + (((double) 360 / 18 / 10 / 24 / 10 / 24 / 10) / 2);//Se divide entre 2 para centrar a la cuadricula final
-        this.longuitud = miLongitud;
+        this.longitud = miLongitud;
     }
 
     private void calcularLatitudGrid() {

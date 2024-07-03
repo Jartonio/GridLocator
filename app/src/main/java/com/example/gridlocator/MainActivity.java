@@ -5,23 +5,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private Brujula brujula;
     private GPS gps;
-    private String gradosBrujula;
+
     private final String TAG = "Log.GridLocator";
 
     private Handler handlerGPS, handlerGrados;
+
     private boolean isAppInForeground = false;
+
+    private boolean buscando=false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button btIr = findViewById(R.id.bt_buscar);
 
 
         brujula = new Brujula(this);
@@ -41,6 +50,23 @@ public class MainActivity extends AppCompatActivity {
         int distancia;
 
         String gridLocator;
+
+        btIr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Button button=findViewById(R.id.bt_buscar);
+                if (buscando) {
+                    buscando = false;
+                    button.setText("Buscar");
+                }else{
+                    buscando = true;
+                    button.setText("Parar");
+                }
+            }
+        });
+
+
+
 
     }
 
@@ -85,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void stopUpdatingDegrees() {
         handlerGrados.removeCallbacks(updateDegreesRunnable);
+
     }
 
     private final Runnable updateLocationRunnable = new Runnable() {
@@ -94,11 +121,12 @@ public class MainActivity extends AppCompatActivity {
                 Location location = gps.getCurrentLocation();
                 if (location != null) {
                     Log.d(TAG, "Coordenadas GPS: " + location.getLatitude() + ", " + location.getLongitude());
+                    rellenarDatos();
                 } else {
                     Log.d(TAG, "Coordenadas GPS no disponibles.");
                 }
             }
-            handlerGPS.postDelayed(this, 1000); // Actualizar cada 5000ms (5 segundos)
+            handlerGPS.postDelayed(this, 2500); // Actualizar msx1000 cada 2,5 segundos
         }
     };
 
@@ -107,8 +135,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if (isAppInForeground) {
                 if (brujula.brujulaPresente()) {
-                    gradosBrujula = String.format("%.2f°", brujula.getGrados());
-                    Log.d(TAG, "Brujula: " + gradosBrujula);
+                    Log.d(TAG, "Brujula: " + String.format("%.2f°", brujula.getGrados()));
                 } else {
                     Log.d(TAG, "Este dispositivo no tiene brújula.");
                 }
@@ -116,7 +143,49 @@ public class MainActivity extends AppCompatActivity {
             handlerGrados.postDelayed(this, 500); // Actualizar cada 5000ms (5 segundos)
         }
     };
+
+    private void rellenarDatos() {
+
+        GridLocator miGridLocator = new GridLocator();
+
+        TextView tvCoordenadasGPS = findViewById(R.id.tv_coordenadas_gps);
+        TextView tvAltitudGPS = findViewById(R.id.tv_altitud_gps);
+        TextView tvMiGrid = findViewById(R.id.tv_mi_grid);
+
+        double altitudGPS = gps.getCurrentLocation().getAltitude();
+        double latitudGPS = gps.getCurrentLocation().getLatitude();
+        double longuitudGPS = gps.getCurrentLocation().getLongitude();
+
+
+        miGridLocator.setLatitudLongitud(latitudGPS, longuitudGPS);
+        String miGrid = miGridLocator.getGridLocator();
+
+        tvCoordenadasGPS.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
+        tvAltitudGPS.setText("" + (int) altitudGPS);
+        tvMiGrid.setText(miGrid);
+
+        if(buscando){
+            TextView tvGridDestino = findViewById(R.id.tv_grid_destino);
+
+            miGridLocator.setGridLocator(tvGridDestino.getText().toString());
+
+            Log.d(TAG, "grilocator: "+ tvGridDestino.toString());
+            double latitudDestino = miGridLocator.getLatitud();
+            double longitudDestino = miGridLocator.getLongitud();
+
+            TextView tvCoordenadasDestino=findViewById(R.id.tv_coordenadas_destino);
+            tvCoordenadasDestino.setText(GeoUtilidades.formatearCoordenadas(7,latitudDestino,longitudDestino));
+
+        }
+
+
+
+    }
+
+
 }
+
+
 /*
 private void test{
         double sumaDistancias = 0;
@@ -126,6 +195,11 @@ private void test{
         double de3a4 = 0;
         double de4a5 = 0;
         double mayor5 = 0;
+         double longitudInicial, latitudInicial, precision, latitudGridLocator, longuitudGridLocator;
+        double latitudObservador, longuitudObservador, azimut, rumboFinal, declinacion;
+        int distancia;
+
+        String gridLocator;
 
         GridLocator miGridLocator = new GridLocator();
 
