@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
 
             if (distanciaDestino < 1000) {
-                tvDistanciaDestino.setText(toString().valueOf((int) distanciaDestino + " m."));
+                tvDistanciaDestino.setText((int) distanciaDestino + " m.");
             } else {
                 distanciaDestino = distanciaDestino / 1000;
                 DecimalFormat miDF = new DecimalFormat("###,###.##");
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             TextView tvAzimutDestino = findViewById(R.id.tv_azimut_destino);
             gradosAzimut = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
 
-            tvAzimutDestino.setText(toString().valueOf((int) gradosAzimut) + "º");
+            tvAzimutDestino.setText((int) gradosAzimut + "º");
 
 
         }
