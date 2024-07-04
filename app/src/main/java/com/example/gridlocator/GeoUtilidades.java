@@ -47,8 +47,7 @@ public class GeoUtilidades {
         return (miLatitudString+", "+miLongitudString);
     }
 
-    public static double calcularDeclinacionMagnetica(double lat, double lon){
-        long altura=0;
+    public static double calcularDeclinacionMagnetica(double lat, double lon,long altura){
         GeomagneticField miGeo= new GeomagneticField((float)lat,(float)lon,altura,System.currentTimeMillis());
         return miGeo.getDeclination();
     }

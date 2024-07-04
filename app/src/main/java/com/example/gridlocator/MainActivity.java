@@ -1,5 +1,7 @@
 package com.example.gridlocator;
 
+import android.content.pm.ActivityInfo;
+import android.icu.text.DecimalFormat;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,16 +25,17 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isAppInForeground = false;
 
-    private boolean buscando=false;
+    private boolean buscando = false;
+    private double gradosAzimut;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Button btIr = findViewById(R.id.bt_buscar);
-
 
         brujula = new Brujula(this);
         gps = new GPS(this);
@@ -39,33 +43,33 @@ public class MainActivity extends AppCompatActivity {
         handlerGPS = new Handler(Looper.getMainLooper());
         handlerGrados = new Handler(Looper.getMainLooper());
 
-
         if (!brujula.brujulaPresente()) {
             Log.d(TAG, "ERROR, este terminal no tiene la brujula disponible.");
         }
 
 
-        double longitudInicial, latitudInicial, precision, latitudGridLocator, longuitudGridLocator;
-        double latitudObservador, longuitudObservador, azimut, rumboFinal, declinacion;
-        int distancia;
+        //double longitudInicial, latitudInicial, precision, latitudGridLocator, longuitudGridLocator;
+        //double latitudObservador, longuitudObservador, azimut, rumboFinal, declinacion;
+        //int distancia;
 
-        String gridLocator;
+        //String gridLocator;
 
         btIr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button=findViewById(R.id.bt_buscar);
+                Button button = findViewById(R.id.bt_buscar);
+                TextView textView = findViewById(R.id.tv_grid_destino);
                 if (buscando) {
                     buscando = false;
                     button.setText("Buscar");
-                }else{
+                    textView.setEnabled(true);
+                } else {
                     buscando = true;
                     button.setText("Parar");
+                    textView.setEnabled(false);
                 }
             }
         });
-
-
 
 
     }
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Coordenadas GPS no disponibles.");
                 }
             }
-            handlerGPS.postDelayed(this, 2500); // Actualizar msx1000 cada 2,5 segundos
+            handlerGPS.postDelayed(this, 1500); // Actualizar msx1000 cada 2,5 segundos
         }
     };
 
@@ -138,6 +142,23 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Brujula: " + String.format("%.2f°", brujula.getGrados()));
                 } else {
                     Log.d(TAG, "Este dispositivo no tiene brújula.");
+                }
+                if (buscando) {
+                    double declinacion = GeoUtilidades.calcularDeclinacionMagnetica(gps.getCurrentLocation().getLatitude(), gps.getCurrentLocation().getLongitude(), (int) gps.getCurrentLocation().getAltitude());
+                    double gradosBrujula = brujula.getGrados() + declinacion;
+
+                    gradosBrujula = (Math.round(gradosBrujula));
+                    String textoFormateado = toString().valueOf((int) gradosBrujula);
+                    textoFormateado = textoFormateado.replace("-", "");
+
+                    TextView tvGradosBrujula = findViewById(R.id.tv_grados_brujula);
+                    tvGradosBrujula.setText(textoFormateado + "º");
+
+                    ImageView compassImage = findViewById(R.id.compass_image);
+                    float degrees = brujula.getGrados();
+
+                    compassImage.setRotation((float) gradosAzimut - degrees);
+
                 }
             }
             handlerGrados.postDelayed(this, 500); // Actualizar cada 5000ms (5 segundos)
@@ -155,29 +176,52 @@ public class MainActivity extends AppCompatActivity {
         double altitudGPS = gps.getCurrentLocation().getAltitude();
         double latitudGPS = gps.getCurrentLocation().getLatitude();
         double longuitudGPS = gps.getCurrentLocation().getLongitude();
-
+        double precisionGPS = gps.getCurrentLocation().getAccuracy();
 
         miGridLocator.setLatitudLongitud(latitudGPS, longuitudGPS);
         String miGrid = miGridLocator.getGridLocator();
 
         tvCoordenadasGPS.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
-        tvAltitudGPS.setText("" + (int) altitudGPS);
+        tvAltitudGPS.setText("Altitud: " + (int) altitudGPS + " m.    -    Precisión: " + (int) precisionGPS + " m.");
         tvMiGrid.setText(miGrid);
 
-        if(buscando){
+        if (buscando) {
             TextView tvGridDestino = findViewById(R.id.tv_grid_destino);
 
             miGridLocator.setGridLocator(tvGridDestino.getText().toString());
 
-            Log.d(TAG, "grilocator: "+ tvGridDestino.toString());
+            Log.d(TAG, "grilocator: " + tvGridDestino.toString());
             double latitudDestino = miGridLocator.getLatitud();
             double longitudDestino = miGridLocator.getLongitud();
 
-            TextView tvCoordenadasDestino=findViewById(R.id.tv_coordenadas_destino);
-            tvCoordenadasDestino.setText(GeoUtilidades.formatearCoordenadas(7,latitudDestino,longitudDestino));
+            TextView tvCoordenadasDestino = findViewById(R.id.tv_coordenadas_destino);
+            tvCoordenadasDestino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
+
+            TextView tvDistanciaDestino = findViewById(R.id.tv_distancia_destino);
+            double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+
+            if (distanciaDestino < 1000) {
+                tvDistanciaDestino.setText(toString().valueOf((int) distanciaDestino + " m."));
+            } else {
+                distanciaDestino = distanciaDestino / 1000;
+                DecimalFormat miDF = new DecimalFormat("###,###.##");
+                String textoFormateado = miDF.format(distanciaDestino);
+                char caracter = textoFormateado.charAt(textoFormateado.length() - 3);
+                if (caracter == '.') {
+                    textoFormateado = textoFormateado.replace(".", "-");
+                    textoFormateado = textoFormateado.replace(",", ".");
+                    textoFormateado = textoFormateado.replace("-", ",");
+                }
+                tvDistanciaDestino.setText(textoFormateado + " Km.");
+            }
+
+            TextView tvAzimutDestino = findViewById(R.id.tv_azimut_destino);
+            gradosAzimut = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+
+            tvAzimutDestino.setText(toString().valueOf((int) gradosAzimut) + "º");
+
 
         }
-
 
 
     }
