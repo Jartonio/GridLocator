@@ -126,7 +126,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_azimut_destino" />
 
     <ImageView
-        android:id="@+id/compass_image"
+        android:id="@+id/iv_compass_image"
         android:layout_width="152dp"
         android:layout_height="175dp"
         android:layout_centerHorizontal="true"
