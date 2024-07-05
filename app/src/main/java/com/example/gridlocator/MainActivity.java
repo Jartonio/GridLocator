@@ -1,6 +1,7 @@
 package com.example.gridlocator;
 
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.icu.text.DecimalFormat;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Brujula brujula;
 
-    private GPS gps;
+    //private GPS gps;
+    private GPS2 gps2;
 
     private GridLocator miGridLocator;
 
@@ -51,6 +55,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+
+        gps2 = new GPS2(this);
+
+        // Verificar el estado del GPS y los permisos después de la creación de GPS2
+        if (gps2.isPermissionDenied()) {
+            Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
+        } else if (!gps2.isGPSEnabled()) {
+            Toast.makeText(this, "GPS no está activado", Toast.LENGTH_SHORT).show();
+        }
+
+
         bt_ir = findViewById(R.id.bt_buscar);
         bt_buscar = findViewById(R.id.bt_buscar);
         tv_grid_destino = findViewById(R.id.tv_grid_destino);
@@ -64,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         tv_distancia_destino = findViewById(R.id.tv_distancia_destino);
 
         brujula = new Brujula(this);
-        gps = new GPS(this);
+        //gps = new GPS(this);
         miGridLocator = new GridLocator();
 
         handlerGPS = new Handler(Looper.getMainLooper());
@@ -95,11 +110,15 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (brujula.brujulaPresente()) {
             brujula.start();
-            handlerBrujula.post(updateDegreesRunnable);
+            handlerBrujula.post(runnableActualizarBrujula);
         }
         isAppInForeground = true;
-        gps.startListening();
-        handlerGPS.post(updateLocationRunnable);
+        //gps.startListening();
+        handlerGPS.post(runnableActualizarGPS);
+        if (gps2 != null) {
+            gps2.startLocationUpdates();
+
+        }
     }
 
     @Override
@@ -107,34 +126,39 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         if (brujula.brujulaPresente()) {
             brujula.stop();
-            handlerBrujula.removeCallbacks(updateDegreesRunnable);
+            handlerBrujula.removeCallbacks(runnableActualizarBrujula);
         }
         isAppInForeground = false;
-        gps.stopListening();
-        handlerGPS.removeCallbacks(updateLocationRunnable);
+        //gps.stopListening();
+        handlerGPS.removeCallbacks(runnableActualizarGPS);
+        if (gps2 != null) {
+            gps2.stopLocationUpdates();
+        }
     }
 
 
-    private final Runnable updateLocationRunnable = new Runnable() {
+    private final Runnable runnableActualizarGPS = new Runnable() {
         @Override
         public void run() {
             if (isAppInForeground) {
-                Location location = gps.getCurrentLocation();
-                if (location != null) {
-                    rellenarDatos();
-                }
+                //Location location = gps.getCurrentLocation();
+                //if (location != null) {
+                rellenarDatos();
+                // }
             }
             handlerGPS.postDelayed(this, 1500); // Actualizar msx1000 cada 2,5 segundos
         }
     };
 
-    private final Runnable updateDegreesRunnable = new Runnable() {
+    private final Runnable runnableActualizarBrujula = new Runnable() {
         @Override
         public void run() {
             if (isAppInForeground) {
                 if (buscando) {
-                    double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getCurrentLocation().getLatitude(),
-                            gps.getCurrentLocation().getLongitude(), (int) gps.getCurrentLocation().getAltitude());
+                    //double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getCurrentLocation().getLatitude(),
+                    //       gps.getCurrentLocation().getLongitude(), (int) gps.getCurrentLocation().getAltitude());
+                    double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps2.getLatitud(), gps2.getLongitud(), (int) gps2.getLatitud());
+
                     double gradosBrujula = brujula.getGrados() + declinacionMagnetica;
 
                     gradosBrujula = (Math.round(gradosBrujula));
@@ -153,17 +177,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void rellenarDatos() {
 
-        double altitudGPS = gps.getCurrentLocation().getAltitude();
-        double latitudGPS = gps.getCurrentLocation().getLatitude();
-        double longuitudGPS = gps.getCurrentLocation().getLongitude();
-        double precisionGPS = gps.getCurrentLocation().getAccuracy();
+        //double altitudGPS = gps.getCurrentLocation().getAltitude();
+        double altitudGPS = gps2.getAltitud();
+        //double latitudGPS = gps.getCurrentLocation().getLatitude();
+        double latitudGPS = gps2.getLatitud();
+        //double longuitudGPS = gps.getCurrentLocation().getLongitude();
+        double longuitudGPS = gps2.getLongitud();
+        //double precisionGPS = gps.getCurrentLocation().getAccuracy();
+        double precisionGPS = gps2.getPrecision();
 
         miGridLocator.setLatitudLongitud(latitudGPS, longuitudGPS);
         String miGrid = miGridLocator.getGridLocator();
 
-        tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
-        tv_altitud_gps.setText("Altitud: " + (int) altitudGPS + " m.    -    Precisión: " + (int) precisionGPS + " m.");
-        tv_mi_grid.setText(miGrid);
+        if (gps2.getAltitud() == 0.0 && gps2.getLongitud() == 0.0 && gps2.getPrecision() == 0.0 && gps2.getAltitud() == 0.0) {
+            tv_coordenadas_gps.setText("Obteniendo coordenadas del GPS.");
+            tv_altitud_gps.setText("Por favor, espere.");
+            tv_mi_grid.setText("");
+        } else {
+            tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
+            tv_altitud_gps.setText("Altitud: " + (int) altitudGPS + " m.    -    Precisión: " + (int) precisionGPS + " m.");
+            tv_mi_grid.setText(miGrid);
+        }
 
         if (buscando) {
 
@@ -194,4 +228,28 @@ public class MainActivity extends AppCompatActivity {
             tv_azimut_destino.setText((int) gradosAzimut + "º");
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permisos concedidos, reiniciar GPS2 para comenzar a obtener la ubicación
+                gps2 = new GPS2(this);
+            } else {
+                // Permisos denegados, mostrar un mensaje al usuario
+                Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (gps2 != null) {
+            gps2.stopLocationUpdates();
+        }
+    }
+
+
 }
