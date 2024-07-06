@@ -6,9 +6,13 @@ import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,10 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button bt_ir;
     private Button bt_buscar;
     private ImageView iv_compass_image;
-    private TextView tv_grid_destino;
+    private EditText tv_grid_destino;
     private TextView tv_grados_brujula;
     private TextView tv_coordenadas_gps;
     private TextView tv_altitud_gps;
@@ -68,9 +71,13 @@ public class MainActivity extends AppCompatActivity {
         brujula = new Brujula(this);
         miGridLocator = new GridLocator();
 
+        tv_grid_destino.setFilters(new InputFilter[] { new InputFilter.LengthFilter(12) });
+
+
         handlerGPS = new Handler(Looper.getMainLooper());
         handlerBrujula = new Handler(Looper.getMainLooper());
 
+        bt_buscar.setEnabled(false);
         gps = new GPS(this);
 
         // Verificar el estado del GPS y los permisos después de la creación de GPS2
@@ -96,6 +103,34 @@ public class MainActivity extends AppCompatActivity {
                     buscando = true;
                     bt_buscar.setText("Parar");
                     tv_grid_destino.setEnabled(false);
+                }
+            }
+        });
+
+
+        tv_grid_destino.addTextChangedListener(new TextWatcher() {
+            boolean[] isTextModifiedInternally = {false}; // Flag to track internal modifications
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not required for this implementation
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Not required for this implementation
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!isTextModifiedInternally[0]) {
+                    isTextModifiedInternally[0] = true;
+                    tv_grid_destino.setText(s.toString().toUpperCase());
+                    tv_grid_destino.append("");
+                    isTextModifiedInternally[0] = false;
+                    tv_grid_destino.setSelection(tv_grid_destino.getText().length());
+                    if (miGridLocator.gridValido(tv_grid_destino.getText().toString())) {
+                        bt_buscar.setEnabled(true);
+                    }else{
+                        bt_buscar.setEnabled(false);
+                    }
                 }
             }
         });
@@ -146,40 +181,37 @@ public class MainActivity extends AppCompatActivity {
             tv_altitud_gps.setText("Iniciando el programa");
             tv_mi_grid.setText("Por favor, espere.");
         } else {
-            if (gps.getLastUpdateTime() < (System.currentTimeMillis() - 5000)&&gps.getisSignalLost()) {//Poca señal de GPS NO SE SIN FUNCIONA
-                tv_coordenadas_gps.setText("Obteniendo coordenadas del GPS.");
-                tv_altitud_gps.setText("La señal GPS es muy débil.");
-                tv_mi_grid.setText("Busque un sitio mas despejado.");
-            } else {
-                tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
-                tv_altitud_gps.setText("Altitud: " + (int) altitudGPS + " m.    -    Precisión: " + (int) precisionGPS + " m.");
-                tv_mi_grid.setText(miGrid);
 
-                if (buscando) {
-                    miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
-                    double latitudDestino = miGridLocator.getLatitud();
-                    double longitudDestino = miGridLocator.getLongitud();
-                    tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
-                    double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
-                    if (distanciaDestino < 1000) {
-                        tv_distancia_destino.setText((int) distanciaDestino + " m.");
-                    } else {
-                        distanciaDestino = distanciaDestino / 1000;
-                        DecimalFormat miDF = new DecimalFormat("###,###.##");
-                        String textoFormateado = miDF.format(distanciaDestino);
-                        char caracter = textoFormateado.charAt(textoFormateado.length() - 3);
-                        if (caracter == '.') {
-                            textoFormateado = textoFormateado.replace(".", "-");
-                            textoFormateado = textoFormateado.replace(",", ".");
-                            textoFormateado = textoFormateado.replace("-", ",");
-                        }
-                        tv_distancia_destino.setText(textoFormateado + " Km.");
+            tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
+            tv_altitud_gps.setText("Altitud: " + (int) altitudGPS + " m.    -    Precisión: " + (int) precisionGPS + " m.");
+            tv_mi_grid.setText(miGrid);
+
+            if (buscando) {
+                miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
+                double latitudDestino = miGridLocator.getLatitud();
+                double longitudDestino = miGridLocator.getLongitud();
+                tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
+                double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+                if (distanciaDestino < 1000) {
+                    tv_distancia_destino.setText((int) distanciaDestino + " m.");
+                } else {
+                    distanciaDestino = distanciaDestino / 1000;
+                    DecimalFormat miDF = new DecimalFormat("###,###.##");
+                    String textoFormateado = miDF.format(distanciaDestino);
+                    char caracter = textoFormateado.charAt(textoFormateado.length() - 3);
+                    if (caracter == '.') {
+                        textoFormateado = textoFormateado.replace(".", "-");
+                        textoFormateado = textoFormateado.replace(",", ".");
+                        textoFormateado = textoFormateado.replace("-", ",");
                     }
-                    gradosAzimut = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
-                    tv_azimut_destino.setText((int) gradosAzimut + "º");
+                    tv_distancia_destino.setText(textoFormateado + " Km.");
+
                 }
+                gradosAzimut = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+                tv_azimut_destino.setText((int) gradosAzimut + "º");
             }
         }
+
     }
 
     @Override
