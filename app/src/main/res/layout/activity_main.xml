@@ -55,14 +55,14 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_altitud_gps" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_altitud_gps"/>
 
     <EditText
         android:id="@+id/tv_grid_destino"
-        android:layout_width="175dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="237dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:gravity="center"
         android:inputType="text"
@@ -73,12 +73,13 @@
 
     <Button
         android:id="@+id/bt_buscar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_width="93dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
         android:text="Buscar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_grid_destino"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_mi_grid" />
 
     <TextView

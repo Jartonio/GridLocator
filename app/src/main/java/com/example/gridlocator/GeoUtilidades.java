@@ -1,6 +1,7 @@
 package com.example.gridlocator;
 
 import android.hardware.GeomagneticField;
+import android.util.Log;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
