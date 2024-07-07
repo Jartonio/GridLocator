@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean buscando = false;
 
-    private double gradosAzimut,currentAzimut;
+    private double gradosAzimutDestino, currentAzimut;
 
 
     @Override
@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
 
         bt_buscar = findViewById(R.id.bt_buscar);
         tv_grid_destino = findViewById(R.id.tv_grid_destino);
@@ -74,16 +72,18 @@ public class MainActivity extends AppCompatActivity {
         tv_coordenadas_destino = findViewById(R.id.tv_coordenadas_destino);
         tv_distancia_destino = findViewById(R.id.tv_distancia_destino);
 
+        tv_grid_destino.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});//Filtro para 12 caracteres máximo.
+
+
         brujula = new Brujula(this);
         miGridLocator = new GridLocator();
-
-        tv_grid_destino.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
-
 
         handlerGPS = new Handler(Looper.getMainLooper());
         handlerBrujula = new Handler(Looper.getMainLooper());
 
+
         bt_buscar.setEnabled(false);
+
         gps = new GPS(this);
 
         // Verificar el estado del GPS y los permisos después de la creación de GPS2
@@ -105,10 +105,14 @@ public class MainActivity extends AppCompatActivity {
                     buscando = false;
                     bt_buscar.setText("Buscar");
                     tv_grid_destino.setEnabled(true);
+                    brujula.stop();
+                    handlerBrujula.removeCallbacks(runnableActualizarBrujula);
                 } else {
                     buscando = true;
                     bt_buscar.setText("Parar");
                     tv_grid_destino.setEnabled(false);
+                    brujula.start();
+                    handlerBrujula.post(runnableActualizarBrujula);
                 }
             }
         });
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s) {//Pasa los caracteres a mayúsculas y comprueba si es válido el Grid.
                 if (!isTextModifiedInternally[0]) {
                     isTextModifiedInternally[0] = true;
                     tv_grid_destino.setText(s.toString().toUpperCase());
@@ -149,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private final Runnable runnableActualizarGPS = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG, "entrando en gps");
             if (isAppInForeground) {
                 rellenarDatos();
             }
@@ -159,10 +164,11 @@ public class MainActivity extends AppCompatActivity {
     private final Runnable runnableActualizarBrujula = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG, "entrando en brujula");
             if (isAppInForeground) {
                 if (buscando) {
 
-                    double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (int) gps.getLatitud());
+                    double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (long) gps.getAltitud());
 
                     double gradosBrujula = brujula.getGrados() + declinacionMagnetica;
 
@@ -174,47 +180,26 @@ public class MainActivity extends AppCompatActivity {
 
                     tv_grados_brujula.setText(textoFormateado + "º");
 
-                    //Se rota la imagen para que apunte al destino.
-                    //iv_compass_image.setRotation((float) gradosAzimut -brujula.getGrados());
 
-                    float targetAzimut = (float)gradosAzimut -(float)gradosBrujula;
-                    float deltaAzimut = targetAzimut - (float)currentAzimut;
-
-// Ajustar deltaAzimut para evitar rotaciones largas
+                    float targetAzimut = (float) gradosAzimutDestino - (float) gradosBrujula;
+                    float deltaAzimut = targetAzimut - (float) currentAzimut;
+                    // Ajustar deltaAzimut para evitar rotaciones largas
                     if (deltaAzimut > 180) {
                         deltaAzimut -= 360;
                     } else if (deltaAzimut < -180) {
                         deltaAzimut += 360;
                     }
-
-// Calcular el nuevo ángulo después del ajuste
-                    float finalAzimut = (float)currentAzimut + deltaAzimut;
-
+                    // Calcular el nuevo ángulo después del ajuste
+                    float finalAzimut = (float) currentAzimut + deltaAzimut;
                     RotateAnimation an = new RotateAnimation(
-                            (float)currentAzimut, finalAzimut,
+                            (float) currentAzimut, finalAzimut,
                             Animation.RELATIVE_TO_SELF, 0.5f,
                             Animation.RELATIVE_TO_SELF, 0.5f);
-
                     currentAzimut = finalAzimut;
-
                     an.setDuration(250);
                     an.setRepeatCount(0);
                     an.setFillAfter(true);
-
                     iv_compass_image.startAnimation(an);
-
-
-                   /* Animation an = new RotateAnimation(-(float)currentAzimut, -(float)gradosBrujula,
-                   Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                            0.5f);
-                    currentAzimut = gradosBrujula;
-
-                    an.setDuration(500);
-                    an.setRepeatCount(0);
-                    an.setFillAfter(true);
-
-                    iv_compass_image.startAnimation(an);
-                    Log.d(TAG, "run: "+currentAzimut +"  --  "+gradosAzimut);*/
                 }
             }
             handlerBrujula.postDelayed(this, 250); // Actualizar cada 5000ms (5 segundos)
@@ -244,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
             tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
 
-            tv_altitud_gps.setText("Altitud: " + decimalFormat.format( altitudGPS) + " m.    -    Precisión: " + decimalFormat.format(precisionGPS)+ " m.");
+            tv_altitud_gps.setText("Altitud: " + decimalFormat.format(altitudGPS) + " m.   -    Precisión: " + decimalFormat.format(precisionGPS));
             tv_mi_grid.setText(miGrid);
 
             if (buscando) {
@@ -257,17 +242,13 @@ public class MainActivity extends AppCompatActivity {
                     tv_distancia_destino.setText((int) distanciaDestino + " m.");
                 } else {
                     distanciaDestino = distanciaDestino / 1000;
-
-
                     decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
-
                     tv_distancia_destino.setText(decimalFormat.format(distanciaDestino) + " Km.");
                 }
-                gradosAzimut = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
-                tv_azimut_destino.setText((int) gradosAzimut + "º");
+                gradosAzimutDestino = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+                tv_azimut_destino.setText((int) gradosAzimutDestino + "º");
             }
         }
-
     }
 
     @Override
@@ -295,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (brujula.brujulaPresente()) {
+        if (brujula.brujulaPresente() && buscando) {
             brujula.start();
             handlerBrujula.post(runnableActualizarBrujula);
         }

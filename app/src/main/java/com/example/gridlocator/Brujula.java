@@ -53,7 +53,6 @@ public class Brujula implements SensorEventListener {
                 SensorManager.getOrientation(R, orientation);
                 grados = (float) Math.toDegrees(orientation[0]);
                //grados=(grados+360)%360;
-
                 if (grados < 0) {
                     grados += 360;                }
             }

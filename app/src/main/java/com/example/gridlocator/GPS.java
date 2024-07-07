@@ -28,9 +28,6 @@ public class GPS {
     private long lastUpdateTime;
     private Handler handler;
     private boolean isSignalLost;
-
-
-
     public GPS(Context context) {
         this.context = context;
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -82,8 +79,6 @@ public class GPS {
                 handler.postDelayed(this, 5000);
             }
         };
-
-
     }
 
     private void checkPermissionsAndStartLocationUpdates() {
@@ -154,7 +149,7 @@ public class GPS {
         return lastUpdateTime;
     }
 
-public boolean getisSignalLost(){
+    public boolean getisSignalLost(){
         return isSignalLost;
     }
 
