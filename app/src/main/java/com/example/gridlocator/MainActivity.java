@@ -12,6 +12,8 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean buscando = false;
 
-    private double gradosAzimut;
+    private double gradosAzimut,currentAzimut;
 
 
     @Override
@@ -159,18 +161,63 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if (isAppInForeground) {
                 if (buscando) {
+
                     double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (int) gps.getLatitud());
+
                     double gradosBrujula = brujula.getGrados() + declinacionMagnetica;
+
                     gradosBrujula = (Math.round(gradosBrujula));
+
                     String textoFormateado = toString().valueOf((int) gradosBrujula);
+
                     textoFormateado = textoFormateado.replace("-", "");
+
                     tv_grados_brujula.setText(textoFormateado + "º");
+
                     //Se rota la imagen para que apunte al destino.
-                    float degrees = brujula.getGrados();
-                    iv_compass_image.setRotation((float) gradosAzimut - degrees);
+                    //iv_compass_image.setRotation((float) gradosAzimut -brujula.getGrados());
+
+                    float targetAzimut = (float)gradosAzimut -(float)gradosBrujula;
+                    float deltaAzimut = targetAzimut - (float)currentAzimut;
+
+// Ajustar deltaAzimut para evitar rotaciones largas
+                    if (deltaAzimut > 180) {
+                        deltaAzimut -= 360;
+                    } else if (deltaAzimut < -180) {
+                        deltaAzimut += 360;
+                    }
+
+// Calcular el nuevo ángulo después del ajuste
+                    float finalAzimut = (float)currentAzimut + deltaAzimut;
+
+                    RotateAnimation an = new RotateAnimation(
+                            (float)currentAzimut, finalAzimut,
+                            Animation.RELATIVE_TO_SELF, 0.5f,
+                            Animation.RELATIVE_TO_SELF, 0.5f);
+
+                    currentAzimut = finalAzimut;
+
+                    an.setDuration(250);
+                    an.setRepeatCount(0);
+                    an.setFillAfter(true);
+
+                    iv_compass_image.startAnimation(an);
+
+
+                   /* Animation an = new RotateAnimation(-(float)currentAzimut, -(float)gradosBrujula,
+                   Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                            0.5f);
+                    currentAzimut = gradosBrujula;
+
+                    an.setDuration(500);
+                    an.setRepeatCount(0);
+                    an.setFillAfter(true);
+
+                    iv_compass_image.startAnimation(an);
+                    Log.d(TAG, "run: "+currentAzimut +"  --  "+gradosAzimut);*/
                 }
             }
-            handlerBrujula.postDelayed(this, 1000); // Actualizar cada 5000ms (5 segundos)
+            handlerBrujula.postDelayed(this, 250); // Actualizar cada 5000ms (5 segundos)
         }
     };
 
