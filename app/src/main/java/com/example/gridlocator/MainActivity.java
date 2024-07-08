@@ -2,6 +2,7 @@ package com.example.gridlocator;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.icu.text.NumberFormat;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_coordenadas_destino;
     private TextView tv_azimut_destino;
     private TextView tv_distancia_destino;
+    private Button bt_sos;
 
     private Brujula brujula;
 
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         bt_buscar = findViewById(R.id.bt_buscar);
+        bt_sos = findViewById(R.id.bt_sos);
         tv_grid_destino = findViewById(R.id.tv_grid_destino);
         tv_grados_brujula = findViewById(R.id.tv_grados_brujula);
         iv_compass_image = findViewById(R.id.iv_compass_image);
@@ -73,16 +77,16 @@ public class MainActivity extends AppCompatActivity {
         tv_distancia_destino = findViewById(R.id.tv_distancia_destino);
 
         tv_grid_destino.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});//Filtro para 12 caracteres máximo.
-
-
         brujula = new Brujula(this);
         miGridLocator = new GridLocator();
 
         handlerGPS = new Handler(Looper.getMainLooper());
         handlerBrujula = new Handler(Looper.getMainLooper());
-
-
         bt_buscar.setEnabled(false);
+        bt_sos.setEnabled(false);
+        bt_sos.setTextColor(Color.GRAY);
+        bt_sos.setLetterSpacing(0.2f);
+
 
         gps = new GPS(this);
 
@@ -97,6 +101,22 @@ public class MainActivity extends AppCompatActivity {
         if (!brujula.brujulaPresente()) {
             Log.d(TAG, "ERROR, este terminal no tiene la brujula disponible.");
         }
+
+        bt_sos.setOnClickListener(view -> {
+            // Crea un constructor de AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle(miGridLocator.getGridLocator());
+            builder.setMessage("Por favor, tramsnita las siguientes palabras con calma:\n\n\n"+miGridLocator.locucionGrid().toString());
+            // Agrega los botones y sus manejadores de clics
+            builder.setPositiveButton("Aceptar", (dialog, which) -> {
+                // Acción al hacer clic en "Aceptar"
+            });
+            // Muestra el diálogo
+            AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        });
+
 
         bt_buscar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                     an.setRepeatCount(0);
                     an.setFillAfter(true);
                     iv_compass_image.startAnimation(an);
+
                 }
             }
             handlerBrujula.postDelayed(this, 250); // Actualizar cada 5000ms (5 segundos)
@@ -223,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
             tv_altitud_gps.setText("Iniciando el programa");
             tv_mi_grid.setText("Por favor, espere.");
         } else {
+            bt_sos.setTextColor(Color.WHITE);
+            bt_sos.setEnabled(true);
             tv_mi_grid.setLetterSpacing(0.2f);
             tv_grid_destino.setLetterSpacing(0.2f);
             decimalFormat.applyPattern("#,##0"); // Establecer el patrón deseado

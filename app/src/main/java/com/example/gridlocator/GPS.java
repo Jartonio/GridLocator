@@ -28,6 +28,7 @@ public class GPS {
     private long lastUpdateTime;
     private Handler handler;
     private boolean isSignalLost;
+
     public GPS(Context context) {
         this.context = context;
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);

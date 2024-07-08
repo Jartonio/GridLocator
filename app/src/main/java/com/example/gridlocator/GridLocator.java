@@ -1,6 +1,8 @@
 package com.example.gridlocator;
 
 
+import android.util.Log;
+
 public class GridLocator {
 
     private double latitud, longitud;
@@ -54,8 +56,7 @@ public class GridLocator {
                     miGrid[4] < 'A' || miGrid[4] > 'X' || miGrid[5] < 'A' || miGrid[5] > 'X' ||
                     miGrid[6] < '0' || miGrid[6] > '9' || miGrid[7] < '0' || miGrid[7] > '9' ||
                     miGrid[8] < 'A' || miGrid[8] > 'X' || miGrid[9] < 'A' || miGrid[9] > 'X' ||
-                    miGrid[10] < '0' || miGrid[11] > '9'
-            ) {
+                    miGrid[10] < '0' || miGrid[10] > '9'|| miGrid[11] < '0' || miGrid[11] > '9') {
                 return false;
             } else {
                 return true;
@@ -228,5 +229,118 @@ public class GridLocator {
         miLatitud = (la1 + la3 + la5 + la7 + la9 + la11) - 90;
         miLatitud = miLatitud + (((double) 180 / 18 / 10 / 24 / 10 / 24 / 10) / 2);//Se divide entre 2 para centrar a la cuadricula final
         this.latitud = miLatitud;
+    }
+
+    public String locucionGrid() {
+        char[] miGrid = gridLocator.toCharArray();
+        StringBuilder locucionGrid = new StringBuilder() ;
+
+        for (int i = 0; i <(gridLocator.length()); i++) {
+            switch (miGrid[i]) {
+                case 'A':
+                    locucionGrid.append("ALFA").append("\n");
+                    break;
+                case 'B':
+                    locucionGrid.append("BRAVO").append("\n");
+                    break;
+                case 'C':
+                    locucionGrid.append("CHARLY").append("\n");
+                    break;
+                case 'D':
+                    locucionGrid.append("DELTA").append("\n");
+                    break;
+                case 'E':
+                    locucionGrid.append("ECO").append("\n");
+                    break;
+                case 'F':
+                    locucionGrid.append("FOXTROT").append("\n");
+                    break;
+                case 'G':
+                    locucionGrid.append("GOLF").append("\n");
+                    break;
+                case 'H':
+                    locucionGrid.append("HOTEL").append("\n");
+                    break;
+                case 'I':
+                    locucionGrid.append("INDIA").append("\n");
+                    break;
+                case 'J':
+                    locucionGrid.append("JULIET").append("\n");
+                    break;
+                case 'K':
+                    locucionGrid.append("KILO").append("\n");
+                    break;
+                case 'L':
+                    locucionGrid.append("LIMA").append("\n");
+                    break;
+                case 'M':
+                    locucionGrid.append("MIKE").append("\n");
+                    break;
+                case 'N':
+                    locucionGrid.append("NOVEMBER").append("\n");
+                    break;
+                case 'O':
+                    locucionGrid.append("OSCAR").append("\n");
+                    break;
+                case 'P':
+                    locucionGrid.append("PAPA").append("\n");
+                    break;
+                case 'Q':
+                    locucionGrid.append("QUEBEC").append("\n");
+                    break;
+                case 'R':
+                    locucionGrid.append("ROMEO").append("\n");
+                    break;
+                case 'S':
+                    locucionGrid.append("SIERRA").append("\n");
+                    break;
+                case 'T':
+                    locucionGrid.append("TANGO").append("\n");
+                    break;
+                case 'U':
+                    locucionGrid.append("UNIFORM").append("\n");
+                    break;
+                case 'V':
+                    locucionGrid.append("VICTOR").append("\n");
+                    break;
+                case 'W':
+                    locucionGrid.append("WISKY").append("\n");
+                    break;
+                case '0':
+                    locucionGrid.append("CERO").append("\n");
+                    break;
+                case '1':
+                    locucionGrid.append("UNO").append("\n");
+                    break;
+                case '2':
+                    locucionGrid.append("DOS").append("\n");
+                    break;
+                case '3':
+                    locucionGrid.append("TRES").append("\n");
+                    break;
+                case '4':
+                    locucionGrid.append("CUATRO").append("\n");
+                    break;
+                case '5':
+                    locucionGrid.append("CINCO").append("\n");
+                    break;
+                case '6':
+                    locucionGrid.append("SEIS").append("\n");
+                    break;
+                case '7':
+                    locucionGrid.append("SIETE").append("\n");
+                    break;
+                case '8':
+                    locucionGrid.append("OCHO").append("\n");
+                    break;
+                case '9':
+                    locucionGrid.append("NUEVE").append("\n");
+                    break;
+
+            }
+        }
+
+
+        return locucionGrid.toString();
     }
 }
