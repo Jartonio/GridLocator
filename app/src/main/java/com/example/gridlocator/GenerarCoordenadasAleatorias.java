@@ -12,7 +12,6 @@ public class GenerarCoordenadasAleatorias {
     private static final double MIN_LONGITUDE = -180.0;
     private static final double MAX_LONGITUDE = 180.0;
 
-
     public static double latitudAleatoria() {
         Random random = new Random();
         return MIN_LATITUDE + (MAX_LATITUDE - MIN_LATITUDE) * random.nextFloat();
