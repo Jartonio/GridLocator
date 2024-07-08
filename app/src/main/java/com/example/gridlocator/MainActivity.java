@@ -198,6 +198,13 @@ public class MainActivity extends AppCompatActivity {
 
                     textoFormateado = textoFormateado.replace("-", "");
 
+                    if (gradosBrujula==gradosAzimutDestino){
+                        tv_grados_brujula.setTextColor(Color.GREEN);
+                        ;
+                    }else{
+                        tv_grados_brujula.setTextColor(Color.RED);
+                    }
+
                     tv_grados_brujula.setText(textoFormateado + "º");
 
 
