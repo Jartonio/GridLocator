@@ -317,15 +317,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                         tv_grados_brujula.setText(textoFormateado + "º");
                         tv_grados_brujula.setText("" + (int) gradosBrujula);
-                        float targetAzimut = (float) gradosAzimutDestino - (float) gradosBrujula;
-                        float deltaAzimut = targetAzimut - (float) azimuth;
+                       // float targetAzimut = (float) gradosAzimutDestino - (float) gradosBrujula;
+                       // float deltaAzimut = targetAzimut - (float) azimuth;
                         // Ajustar deltaAzimut para evitar rotaciones largas
-                        if (deltaAzimut > 180) {
-                            deltaAzimut -= 360;
-                        } else if (deltaAzimut < -180) {
-                            deltaAzimut += 360;
-                        }
-                        adjustArrow(azimuth + deltaAzimut);//azimuth);
+                        //if (deltaAzimut > 180) {
+                        //    deltaAzimut -= 360;
+                        //} else if (deltaAzimut < -180) {
+                         //   deltaAzimut += 360;
+                       // }
+                        iv_compass_image.setRotation((int)gradosAzimutDestino);
+                        adjustArrow(azimuth );//+ deltaAzimut);//azimuth);
                     }
                 });
             }
