@@ -4,9 +4,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 public class Brujula implements SensorEventListener {
-    private static final String TAG = "Compass";
+    private static final String TAG = "Log.GridLocator";
 
     public interface CompassListener {
         void onNewAzimuth(float azimuth);
@@ -91,7 +92,7 @@ public class Brujula implements SensorEventListener {
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                // Log.d(TAG, "azimuth (rad): " + azimuth);
+                Log.d(TAG, "En la clase brujula azimuth (rad): " + azimuth);
                 azimuth = (float) Math.toDegrees(orientation[0]); // orientation
                 azimuth = (azimuth + azimuthFix + 360) % 360;
                 // Log.d(TAG, "azimuth (deg): " + azimuth);

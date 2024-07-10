@@ -49,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "Log.GridLocator";
 
-    private Handler handlerGPS, handlerBrujula;
+    private Handler handlerGPS;
 
     private boolean isAppInForeground = false;
 
     private boolean buscando = false;
 
-    private double gradosAzimutDestino, currentAzimut;
+    private double gradosAzimutDestino;
 
     private float currentAzimuth;
 
@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         miGridLocator = new GridLocator();
 
         handlerGPS = new Handler(Looper.getMainLooper());
-        handlerBrujula = new Handler(Looper.getMainLooper());
         bt_buscar.setEnabled(false);
         bt_sos.setEnabled(false);
         bt_sos.setTextColor(Color.GRAY);
@@ -125,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
                     buscando = true;
                     bt_buscar.setText("Parar");
                     tv_grid_destino.setEnabled(false);
+                    setupCompass();
                     miBrujula.start();
+
                 }
             }
         });
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        setupCompass();
+
     }
 
 
@@ -248,7 +249,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        miBrujula.start();
+        if (buscando) {
+            miBrujula.start();
+        }
         isAppInForeground = true;
         handlerGPS.post(runnableActualizarGPS);
         if (gps != null) {
@@ -304,22 +307,23 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (buscando) {
+                        //if (buscando) {
                             double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (long) gps.getAltitud());
-                            double gradosBrujula = 50f;//miBrujula.getGrados() + declinacionMagnetica;
+                            double gradosBrujula = azimuth + declinacionMagnetica;
 
                             gradosBrujula = (Math.round(gradosBrujula));
                             String textoFormateado = toString().valueOf((int) gradosBrujula);
                             textoFormateado = textoFormateado.replace("-", "");
-                            if (gradosBrujula == gradosAzimutDestino) {
+                            if ((int)gradosBrujula == (int)gradosAzimutDestino) {
                                 tv_grados_brujula.setTextColor(Color.GREEN);
                                 ;
                             } else {
                                 tv_grados_brujula.setTextColor(Color.RED);
                             }
                             tv_grados_brujula.setText(textoFormateado + "º");
-                        }
-                        adjustArrow(azimuth);
+                        //}
+                        adjustArrow((float)gradosBrujula);//azimuth);
+                        tv_grados_brujula.setText(""+(int)gradosBrujula);
                     }
                 });
             }
