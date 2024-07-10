@@ -302,12 +302,13 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //Se desvia la brujula para que apunte hacia donde hay que ir, no al norte.
+
                         double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (long) gps.getAltitud());
                         double gradosBrujula = azimuth + declinacionMagnetica;
-                        gradosBrujula = (int) gradosBrujula;// (Math.round(gradosBrujula));
+
+                        //gradosBrujula = (Math.round(gradosBrujula));
                         String textoFormateado = toString().valueOf((int) gradosBrujula);
-                        textoFormateado = textoFormateado.replace("-", "");
+                        //textoFormateado = textoFormateado.replace("-", "");
                         if ((int) gradosBrujula == (int) gradosAzimutDestino) {
                             tv_grados_brujula.setTextColor(Color.GREEN);
                             iv_compass_image.setImageResource(R.drawable.flecha_color_verde);
@@ -317,16 +318,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                         tv_grados_brujula.setText(textoFormateado + "º");
                         tv_grados_brujula.setText("" + (int) gradosBrujula);
-                       // float targetAzimut = (float) gradosAzimutDestino - (float) gradosBrujula;
-                       // float deltaAzimut = targetAzimut - (float) azimuth;
-                        // Ajustar deltaAzimut para evitar rotaciones largas
-                        //if (deltaAzimut > 180) {
-                        //    deltaAzimut -= 360;
-                        //} else if (deltaAzimut < -180) {
-                         //   deltaAzimut += 360;
-                       // }
+
+
+                        //Se desvia la brujula para que apunte hacia donde hay que ir, no al norte.
                         iv_compass_image.setRotation((int)gradosAzimutDestino);
-                        adjustArrow(azimuth );//+ deltaAzimut);//azimuth);
+                        adjustArrow((float)gradosBrujula );//+ deltaAzimut);//azimuth);
                     }
                 });
             }
