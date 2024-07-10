@@ -336,11 +336,8 @@ public class GridLocator {
                 case '9':
                     locucionGrid.append("NUEVE").append("\n");
                     break;
-
             }
         }
-
-
         return locucionGrid.toString();
     }
 }

@@ -48,7 +48,6 @@ public class GPS {
                 altitud = location.getAltitude();
                 precision = location.getAccuracy();
                 lastUpdateTime = System.currentTimeMillis();
-                Log.d("GPS2", "GPS2: " + latitud + ", " + longitud);
             }
 
             @Override

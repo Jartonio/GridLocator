@@ -87,8 +87,12 @@ public class MainActivity extends AppCompatActivity {
         bt_sos.setTextColor(Color.GRAY);
         bt_sos.setLetterSpacing(0.2f);
         tv_grid_destino.setLetterSpacing(0.2f);
+        iv_compass_image.setImageResource(R.drawable.compass_calibration);
+        tv_coordenadas_destino.setText("Por favor, calibre la brújula");
+        tv_distancia_destino.setText (" duratante 10 segundos antes de empezar");
+        tv_azimut_destino.setText("la busqueda.");
+
         tv_grados_brujula.setVisibility(View.INVISIBLE);
-        iv_compass_image.setVisibility(View.INVISIBLE);
 
         gps = new GPS(this);
 
@@ -128,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                     tv_grid_destino.setEnabled(false);
                     setupCompass();
                     miBrujula.start();
+                    iv_compass_image.setImageResource(R.drawable.flecha_color);
                     tv_grados_brujula.setVisibility(View.VISIBLE);
-                    iv_compass_image.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -162,14 +166,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
 
     private final Runnable runnableActualizarGPS = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "entrando en gps");
             if (isAppInForeground) {
                 rellenarDatos();
             }
@@ -200,14 +202,10 @@ public class MainActivity extends AppCompatActivity {
             tv_mi_grid.setLetterSpacing(0.2f);
             tv_grid_destino.setLetterSpacing(0.2f);
             decimalFormat.applyPattern("#,##0"); // Establecer el patrón deseado
-
             tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
-
             tv_altitud_gps.setText("Altitud: " + decimalFormat.format(altitudGPS) + " m.   -    Precisión: " + decimalFormat.format(precisionGPS));
             tv_mi_grid.setText(miGrid);
-
             if (buscando) {
-
                 miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
                 double latitudDestino = miGridLocator.getLatitud();
                 double longitudDestino = miGridLocator.getLongitud();
@@ -287,10 +285,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void adjustArrow(float azimuth) {
-        Log.d(TAG, "will set rotation from " + currentAzimuth + " to " + azimuth);
-
-        Animation an = new RotateAnimation(-currentAzimuth, -azimuth,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        Animation an = new RotateAnimation(-currentAzimuth, -azimuth, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         currentAzimuth = azimuth;
         an.setDuration(500);
         an.setRepeatCount(0);
@@ -310,22 +305,18 @@ public class MainActivity extends AppCompatActivity {
                         //Se desvia la brujula para que apunte hacia donde hay que ir, no al norte.
                         double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (long) gps.getAltitud());
                         double gradosBrujula = azimuth + declinacionMagnetica;
-
                         gradosBrujula = (int) gradosBrujula;// (Math.round(gradosBrujula));
-
                         String textoFormateado = toString().valueOf((int) gradosBrujula);
                         textoFormateado = textoFormateado.replace("-", "");
                         if ((int) gradosBrujula == (int) gradosAzimutDestino) {
                             tv_grados_brujula.setTextColor(Color.GREEN);
                             iv_compass_image.setImageResource(R.drawable.flecha_color_verde);
-                            ;
                         } else {
                             tv_grados_brujula.setTextColor(Color.RED);
                             iv_compass_image.setImageResource(R.drawable.flecha_color);
                         }
                         tv_grados_brujula.setText(textoFormateado + "º");
                         tv_grados_brujula.setText("" + (int) gradosBrujula);
-
                         float targetAzimut = (float) gradosAzimutDestino - (float) gradosBrujula;
                         float deltaAzimut = targetAzimut - (float) azimuth;
                         // Ajustar deltaAzimut para evitar rotaciones largas
