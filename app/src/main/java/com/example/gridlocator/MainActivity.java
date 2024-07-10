@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
         bt_sos.setOnClickListener(view -> {
             // Crea un constructor de AlertDialog
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle(miGridLocator.getGridLocator());
-            builder.setMessage("Por favor, tramsnita las siguientes palabras con calma:\n\n\n" + miGridLocator.locucionGrid().toString());
+            builder.setTitle(tv_mi_grid.getText().toString());
+            builder.setMessage("Por favor, tramsnita las siguientes palabras con calma:\n\n\n" + miGridLocator.locucionGrid(tv_mi_grid.getText().toString()).toString());
             // Agrega los botones y sus manejadores de clics
             builder.setPositiveButton("Aceptar", (dialog, which) -> {
                 // Acción al hacer clic en "Aceptar"

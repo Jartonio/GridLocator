@@ -231,11 +231,11 @@ public class GridLocator {
         this.latitud = miLatitud;
     }
 
-    public String locucionGrid() {
-        char[] miGrid = gridLocator.toCharArray();
+    public String locucionGrid(String miGridLocator) {
+        char[] miGrid = miGridLocator.toCharArray();
         StringBuilder locucionGrid = new StringBuilder() ;
 
-        for (int i = 0; i <(gridLocator.length()); i++) {
+        for (int i = 0; i <(miGridLocator.length()); i++) {
             switch (miGrid[i]) {
                 case 'A':
                     locucionGrid.append("ALFA").append("\n");
