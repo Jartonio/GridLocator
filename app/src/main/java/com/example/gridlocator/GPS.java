@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
@@ -28,6 +29,8 @@ public class GPS {
     private long lastUpdateTime;
     private Handler handler;
     private boolean isSignalLost;
+    private Location localizacionAnterior;
+    private float bearing;
 
     public GPS(Context context) {
         this.context = context;
@@ -48,6 +51,12 @@ public class GPS {
                 altitud = location.getAltitude();
                 precision = location.getAccuracy();
                 lastUpdateTime = System.currentTimeMillis();
+
+                //para obtener el rumbo del GPS
+                if (localizacionAnterior != null) {
+                    bearing = localizacionAnterior.bearingTo(location);
+                }
+                localizacionAnterior = location;
             }
 
             @Override
@@ -149,8 +158,16 @@ public class GPS {
         return lastUpdateTime;
     }
 
-    public boolean getisSignalLost(){
+    public boolean getisSignalLost() {
         return isSignalLost;
+    }
+
+    public int rumboGPS() {
+        if (bearing <= 0) {
+            return (int) (bearing += 360);
+        } else {
+            return (int) bearing;
+        }
     }
 
 }

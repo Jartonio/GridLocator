@@ -214,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
         miGridLocator.setLatitudLongitud(latitudGPS, longuitudGPS);
         String miGrid = miGridLocator.getGridLocator();
 
-
-
         if ((latitudGPS == 0.0 && longuitudGPS == 0.0 && precisionGPS == 0.0 && altitudGPS == 0.0)) {
             //Si es la primera vez, pasa por aquí mientras obtienes las coordenadas GPS.
             tv_coordenadas_gps.setText("Obteniendo coordenadas del GPS.");
@@ -334,10 +332,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-
+                        //multiplico poe -1 para ajustar este u oeste
                         double gradosBrujula = azimuth + (-1*declinacionMagnetica);
                         //gradosBrujula = (Math.round(gradosBrujula));
-                        String textoFormateado = toString().valueOf((int) gradosBrujula);
+                        //String textoFormateado = toString().valueOf((int) gradosBrujula);
                         //textoFormateado = textoFormateado.replace("-", "");
                         if ((int) gradosBrujula == (int) gradosAzimutDestino) {
                             tv_grados_brujula.setTextColor(Color.GREEN);
@@ -346,8 +344,8 @@ public class MainActivity extends AppCompatActivity {
                             tv_grados_brujula.setTextColor(Color.RED);
                             iv_compass_image.setImageResource(R.drawable.flecha_color);
                         }
-                        tv_grados_brujula.setText(textoFormateado + "º");
-                        tv_grados_brujula.setText("" + (int) gradosBrujula);
+                        //tv_grados_brujula.setText(textoFormateado + "º");
+                        tv_grados_brujula.setText("" + (int) gradosBrujula+"º     -     "+miGps.rumboGPS()+"º"   );
 
                         //Se desvia la brujula para que apunte hacia donde hay que ir, no al norte.
                         iv_compass_image.setRotation((int) gradosAzimutDestino);
