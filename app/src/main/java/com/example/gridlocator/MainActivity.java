@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     Locale currentLocale = Locale.getDefault();
     DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(currentLocale);
 
+    double declinacionMagnetica;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,12 +215,14 @@ public class MainActivity extends AppCompatActivity {
         String miGrid = miGridLocator.getGridLocator();
 
 
+
         if ((latitudGPS == 0.0 && longuitudGPS == 0.0 && precisionGPS == 0.0 && altitudGPS == 0.0)) {
             //Si es la primera vez, pasa por aquí mientras obtienes las coordenadas GPS.
             tv_coordenadas_gps.setText("Obteniendo coordenadas del GPS.");
             tv_altitud_gps.setText("Iniciando el programa");
             tv_mi_grid.setText("Por favor, espere.");
         } else {
+            declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
             bt_sos.setTextColor(Color.WHITE);
             bt_sos.setEnabled(true);
             tv_mi_grid.setLetterSpacing(0.2f);
@@ -231,7 +235,8 @@ public class MainActivity extends AppCompatActivity {
             if (buscando) {
                 //Recalculala distancia y azimut a destinoa deswtino.
                 gradosAzimutDestino = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
-                tv_azimut_destino.setText((int) gradosAzimutDestino + "º");
+                decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
+                tv_azimut_destino.setText((int) gradosAzimutDestino + "º        -      "+decimalFormat.format(declinacionMagnetica) );
                 double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
                 if (distanciaDestino < 1000) {
                     tv_distancia_destino.setText((int) distanciaDestino + " m.");
@@ -329,9 +334,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
-                        double gradosBrujula = azimuth + (-1*declinacionMagnetica);
 
+                        double gradosBrujula = azimuth + (-1*declinacionMagnetica);
                         //gradosBrujula = (Math.round(gradosBrujula));
                         String textoFormateado = toString().valueOf((int) gradosBrujula);
                         //textoFormateado = textoFormateado.replace("-", "");
