@@ -91,10 +91,15 @@ public class MainActivity extends AppCompatActivity {
         bt_sos.setTextColor(Color.GRAY);
         bt_sos.setLetterSpacing(0.2f);
         tv_grid_destino.setLetterSpacing(0.2f);
-        iv_compass_image.setImageResource(R.drawable.compass_calibration);
-        tv_coordenadas_destino.setText("Por favor, calibre la brújula");
-        tv_distancia_destino.setText (" duratante 10 segundos antes de empezar");
-        tv_azimut_destino.setText("la busqueda.");
+        if (miBrujula.brujulaPresente()){
+            iv_compass_image.setImageResource(R.drawable.compass_calibration);
+            tv_coordenadas_destino.setText("Por favor, calibre la brújula");
+            tv_distancia_destino.setText (" duratante 10 segundos antes de empezar");
+            tv_azimut_destino.setText("la busqueda.");
+        }else{
+            iv_compass_image.setImageResource(R.drawable.sin_flecha);
+            tv_coordenadas_destino.setText("Su dispositivo no tiene brújula");
+        }
 
         tv_grados_brujula.setVisibility(View.INVISIBLE);
 
@@ -142,10 +147,12 @@ public class MainActivity extends AppCompatActivity {
                     tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
 
                     //Inicio la brujula.
-                    iv_compass_image.setImageResource(R.drawable.flecha_color);
-                    tv_grados_brujula.setVisibility(View.VISIBLE);
-                    setupCompass();
-                    miBrujula.start();
+                    if (miBrujula.brujulaPresente()) {
+                        iv_compass_image.setImageResource(R.drawable.flecha_color);
+                        tv_grados_brujula.setVisibility(View.VISIBLE);
+                        setupCompass();
+                        miBrujula.start();
+                    }
                 }
             }
         });

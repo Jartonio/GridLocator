@@ -90,7 +90,13 @@ public class Brujula implements SensorEventListener {
             }
         }
     }
-
+    public boolean brujulaPresente() {
+        if (msensor == null || gsensor == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
