@@ -42,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private Button bt_sos;
 
     private Brujula miBrujula;
-
-    private GPS gps;
-
+    private GPS miGps;
     private GridLocator miGridLocator;
 
     private final String TAG = "Log.GridLocator";
@@ -59,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
     private float currentAzimuth;
 
+    double latitudDestino;
+    double longitudDestino;
+    //Se crea un formato a configuración regional.
+    Locale currentLocale = Locale.getDefault();
+    DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(currentLocale);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +81,11 @@ public class MainActivity extends AppCompatActivity {
         tv_coordenadas_destino = findViewById(R.id.tv_coordenadas_destino);
         tv_distancia_destino = findViewById(R.id.tv_distancia_destino);
         tv_grid_destino.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});//Filtro para 12 caracteres máximo.
+
         miBrujula = new Brujula(this);
         miGridLocator = new GridLocator();
-
         handlerGPS = new Handler(Looper.getMainLooper());
+
         bt_buscar.setEnabled(false);
         bt_sos.setEnabled(false);
         bt_sos.setTextColor(Color.GRAY);
@@ -94,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
 
         tv_grados_brujula.setVisibility(View.INVISIBLE);
 
-        gps = new GPS(this);
+        miGps = new GPS(this);
 
         // Verificar el estado del GPS y los permisos después de la creación de GPS2
-        if (gps.isPermissionDenied()) {
+        if (miGps.isPermissionDenied()) {
             Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
-        } else if (!gps.isGPSEnabled()) {
+        } else if (!miGps.isGPSEnabled()) {
             Toast.makeText(this, "GPS no está activado", Toast.LENGTH_SHORT).show();
         }
 
@@ -130,13 +134,22 @@ public class MainActivity extends AppCompatActivity {
                     buscando = true;
                     bt_buscar.setText("Parar");
                     tv_grid_destino.setEnabled(false);
-                    setupCompass();
-                    miBrujula.start();
+
+                    //obtengo las coordenadas del destito
+                    miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
+                    latitudDestino = miGridLocator.getLatitud();
+                    longitudDestino = miGridLocator.getLongitud();
+                    tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
+
+                    //Inicio la brujula.
                     iv_compass_image.setImageResource(R.drawable.flecha_color);
                     tv_grados_brujula.setVisibility(View.VISIBLE);
+                    setupCompass();
+                    miBrujula.start();
                 }
             }
         });
+
         tv_grid_destino.addTextChangedListener(new TextWatcher() {
             boolean[] isTextModifiedInternally = {false}; // Flag to track internal modifications
 
@@ -181,18 +194,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void rellenarDatos() {
-        double altitudGPS = gps.getAltitud();
-        double latitudGPS = gps.getLatitud();
-        double longuitudGPS = gps.getLongitud();
-        double precisionGPS = gps.getPrecision();
-
+        //Obtengo los datos de mi posición actual para poder calcular la distancia y el azimut al destino.
+        double altitudGPS = miGps.getAltitud();
+        double latitudGPS = miGps.getLatitud();
+        double longuitudGPS = miGps.getLongitud();
+        double precisionGPS = miGps.getPrecision();
         miGridLocator.setLatitudLongitud(latitudGPS, longuitudGPS);
         String miGrid = miGridLocator.getGridLocator();
 
-        Locale currentLocale = Locale.getDefault();
-        DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(currentLocale);
 
-        if ((gps.getLatitud() == 0.0 && gps.getLongitud() == 0.0 && gps.getPrecision() == 0.0 && gps.getAltitud() == 0.0)) {//Primer pase al iniciar el programa
+
+        if ((latitudGPS == 0.0 && longuitudGPS == 0.0 &&precisionGPS == 0.0 && altitudGPS == 0.0)) {
+            //Si es la primera vez, pasa por aquí mientras obtienes las coordenadas GPS.
             tv_coordenadas_gps.setText("Obteniendo coordenadas del GPS.");
             tv_altitud_gps.setText("Iniciando el programa");
             tv_mi_grid.setText("Por favor, espere.");
@@ -206,10 +219,9 @@ public class MainActivity extends AppCompatActivity {
             tv_altitud_gps.setText("Altitud: " + decimalFormat.format(altitudGPS) + " m.   -    Precisión: " + decimalFormat.format(precisionGPS));
             tv_mi_grid.setText(miGrid);
             if (buscando) {
-                miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
-                double latitudDestino = miGridLocator.getLatitud();
-                double longitudDestino = miGridLocator.getLongitud();
-                tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
+                //Recalculala distancia y azimut a destinoa deswtino.
+                gradosAzimutDestino = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+                tv_azimut_destino.setText((int) gradosAzimutDestino + "º");
                 double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
                 if (distanciaDestino < 1000) {
                     tv_distancia_destino.setText((int) distanciaDestino + " m.");
@@ -218,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
                     decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
                     tv_distancia_destino.setText(decimalFormat.format(distanciaDestino) + " Km.");
                 }
-                gradosAzimutDestino = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
-                tv_azimut_destino.setText((int) gradosAzimutDestino + "º");
             }
         }
     }
@@ -230,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permisos concedidos, reiniciar GPS2 para comenzar a obtener la ubicación
-                gps = new GPS(this);
+                miGps = new GPS(this);
             } else {
                 // Permisos denegados, mostrar un mensaje al usuario
                 Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
@@ -242,8 +252,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         miBrujula.stop();
-        if (gps != null) {
-            gps.stopLocationUpdates();
+        if (miGps != null) {
+            miGps.stopLocationUpdates();
         }
         miBrujula.stop();
     }
@@ -256,8 +266,8 @@ public class MainActivity extends AppCompatActivity {
         }
         isAppInForeground = true;
         handlerGPS.post(runnableActualizarGPS);
-        if (gps != null) {
-            gps.startLocationUpdates();
+        if (miGps != null) {
+            miGps.startLocationUpdates();
         }
     }
 
@@ -267,8 +277,8 @@ public class MainActivity extends AppCompatActivity {
         miBrujula.stop();
         isAppInForeground = false;
         handlerGPS.removeCallbacks(runnableActualizarGPS);
-        if (gps != null) {
-            gps.stopLocationUpdates();
+        if (miGps != null) {
+            miGps.stopLocationUpdates();
         }
     }
 
@@ -303,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(gps.getLatitud(), gps.getLongitud(), (long) gps.getAltitud());
+                        double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
                         double gradosBrujula = azimuth + declinacionMagnetica;
 
                         //gradosBrujula = (Math.round(gradosBrujula));
@@ -318,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         tv_grados_brujula.setText(textoFormateado + "º");
                         tv_grados_brujula.setText("" + (int) gradosBrujula);
-
 
                         //Se desvia la brujula para que apunte hacia donde hay que ir, no al norte.
                         iv_compass_image.setRotation((int)gradosAzimutDestino);
