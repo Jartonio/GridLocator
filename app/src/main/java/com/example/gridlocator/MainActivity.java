@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             tv_altitud_gps.setText("Iniciando el programa");
             tv_mi_grid.setText("Por favor, espere.");
         } else {
-            declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
+            declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(latitudGPS, longuitudGPS, (long) altitudGPS);
             bt_sos.setTextColor(Color.WHITE);
             bt_sos.setEnabled(true);
             tv_mi_grid.setLetterSpacing(0.2f);
@@ -246,9 +246,9 @@ public class MainActivity extends AppCompatActivity {
                     tv_distancia_destino.setText(decimalFormat.format(distanciaDestino) + " Km.");
                 }
                 if (!miBrujula.brujulaPresente()) {
-                    double declinacion = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
+                    //double declinacion = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
                     decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
-                    tv_grados_brujula.setText("Declinación magética: " + decimalFormat.format(declinacion));
+                    tv_grados_brujula.setText("Declinación magética: " + decimalFormat.format(declinacionMagnetica));
                     tv_grados_brujula.setVisibility(View.VISIBLE);
                 }
             }
