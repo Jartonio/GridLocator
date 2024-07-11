@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         tv_coordenadas_destino = findViewById(R.id.tv_coordenadas_destino);
         tv_distancia_destino = findViewById(R.id.tv_distancia_destino);
         tv_grid_destino.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});//Filtro para 12 caracteres máximo.
+        tv_grid_destino.setEnabled(false);
 
         miBrujula = new Brujula(this);
         miGridLocator = new GridLocator();
@@ -91,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
         bt_sos.setTextColor(Color.GRAY);
         bt_sos.setLetterSpacing(0.2f);
         tv_grid_destino.setLetterSpacing(0.2f);
-        if (miBrujula.brujulaPresente()){
+        if (miBrujula.brujulaPresente()) {
             iv_compass_image.setImageResource(R.drawable.compass_calibration);
             tv_coordenadas_destino.setText("Por favor, calibre la brújula");
-            tv_distancia_destino.setText (" duratante 10 segundos antes de empezar");
+            tv_distancia_destino.setText(" duratante 10 segundos antes de empezar");
             tv_azimut_destino.setText("la busqueda.");
-        }else{
+        } else {
             iv_compass_image.setImageResource(R.drawable.sin_flecha);
             tv_coordenadas_destino.setText("Su dispositivo no tiene brújula");
         }
@@ -130,30 +131,32 @@ public class MainActivity extends AppCompatActivity {
         bt_buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (buscando) {
-                    buscando = false;
-                    bt_buscar.setText("Buscar");
-                    tv_grid_destino.setEnabled(true);
-                    miBrujula.stop();
-                } else {
-                    buscando = true;
-                    bt_buscar.setText("Parar");
-                    tv_grid_destino.setEnabled(false);
 
-                    //obtengo las coordenadas del destito
-                    miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
-                    latitudDestino = miGridLocator.getLatitud();
-                    longitudDestino = miGridLocator.getLongitud();
-                    tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
+                    if (buscando) {
+                        buscando = false;
+                        bt_buscar.setText("Buscar");
+                        tv_grid_destino.setEnabled(true);
+                        miBrujula.stop();
+                    } else {
+                        buscando = true;
+                        bt_buscar.setText("Parar");
+                        tv_grid_destino.setEnabled(false);
 
-                    //Inicio la brujula.
-                    if (miBrujula.brujulaPresente()) {
-                        iv_compass_image.setImageResource(R.drawable.flecha_color);
-                        tv_grados_brujula.setVisibility(View.VISIBLE);
-                        setupCompass();
-                        miBrujula.start();
+                        //obtengo las coordenadas del destito
+                        miGridLocator.setGridLocator(tv_grid_destino.getText().toString());
+                        latitudDestino = miGridLocator.getLatitud();
+                        longitudDestino = miGridLocator.getLongitud();
+                        tv_coordenadas_destino.setText(GeoUtilidades.formatearCoordenadas(7, latitudDestino, longitudDestino));
+
+                        //Inicio la brujula.
+                        if (miBrujula.brujulaPresente()) {
+                            iv_compass_image.setImageResource(R.drawable.flecha_color);
+                            tv_grados_brujula.setVisibility(View.VISIBLE);
+                            setupCompass();
+                            miBrujula.start();
+                        }
                     }
-                }
+
             }
         });
 
@@ -210,8 +213,7 @@ public class MainActivity extends AppCompatActivity {
         String miGrid = miGridLocator.getGridLocator();
 
 
-
-        if ((latitudGPS == 0.0 && longuitudGPS == 0.0 &&precisionGPS == 0.0 && altitudGPS == 0.0)) {
+        if ((latitudGPS == 0.0 && longuitudGPS == 0.0 && precisionGPS == 0.0 && altitudGPS == 0.0)) {
             //Si es la primera vez, pasa por aquí mientras obtienes las coordenadas GPS.
             tv_coordenadas_gps.setText("Obteniendo coordenadas del GPS.");
             tv_altitud_gps.setText("Iniciando el programa");
@@ -221,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
             bt_sos.setEnabled(true);
             tv_mi_grid.setLetterSpacing(0.2f);
             tv_grid_destino.setLetterSpacing(0.2f);
+            tv_grid_destino.setEnabled(true);
             decimalFormat.applyPattern("#,##0"); // Establecer el patrón deseado
             tv_coordenadas_gps.setText(GeoUtilidades.formatearCoordenadas(7, latitudGPS, longuitudGPS));
             tv_altitud_gps.setText("Altitud: " + decimalFormat.format(altitudGPS) + " m.   -    Precisión: " + decimalFormat.format(precisionGPS));
@@ -236,6 +239,12 @@ public class MainActivity extends AppCompatActivity {
                     distanciaDestino = distanciaDestino / 1000;
                     decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
                     tv_distancia_destino.setText(decimalFormat.format(distanciaDestino) + " Km.");
+                }
+                if (!miBrujula.brujulaPresente()) {
+                    double declinacion = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
+                    decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
+                    tv_grados_brujula.setText("Declinación magética: " + decimalFormat.format(declinacion));
+                    tv_grados_brujula.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -337,8 +346,8 @@ public class MainActivity extends AppCompatActivity {
                         tv_grados_brujula.setText("" + (int) gradosBrujula);
 
                         //Se desvia la brujula para que apunte hacia donde hay que ir, no al norte.
-                        iv_compass_image.setRotation((int)gradosAzimutDestino);
-                        adjustArrow((float)gradosBrujula );//+ deltaAzimut);//azimuth);
+                        iv_compass_image.setRotation((int) gradosAzimutDestino);
+                        adjustArrow((float) gradosBrujula);//+ deltaAzimut);//azimuth);
                     }
                 });
             }
