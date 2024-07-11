@@ -54,9 +54,18 @@ public class GPS {
 
                 //para obtener el rumbo del GPS
                 if (localizacionAnterior != null) {
-                    bearing = localizacionAnterior.bearingTo(location);
+                    float distancia = localizacionAnterior.distanceTo(location);
+                    if (distancia > 5) {
+                        bearing = localizacionAnterior.bearingTo(location);
+                        if (bearing < 0) {
+                            bearing += 360;
+                        }
+                    }
+                    localizacionAnterior = location;
+                } else {
+                    localizacionAnterior = location;
                 }
-                localizacionAnterior = location;
+
             }
 
             @Override
