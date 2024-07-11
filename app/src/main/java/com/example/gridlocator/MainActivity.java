@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                         double declinacionMagnetica = GeoUtilidades.calcularDeclinacionMagnetica(miGps.getLatitud(), miGps.getLongitud(), (long) miGps.getAltitud());
-                        double gradosBrujula = azimuth + declinacionMagnetica;
+                        double gradosBrujula = azimuth + (-1*declinacionMagnetica);
 
                         //gradosBrujula = (Math.round(gradosBrujula));
                         String textoFormateado = toString().valueOf((int) gradosBrujula);
