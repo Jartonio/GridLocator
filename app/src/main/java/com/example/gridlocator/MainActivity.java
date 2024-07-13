@@ -233,6 +233,9 @@ public class MainActivity extends AppCompatActivity {
             if (buscando) {
                 //Recalculala distancia y azimut a destinoa deswtino.
                 gradosAzimutDestino = Math.round(GeoUtilidades.calcularAzimut(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
+                if (gradosAzimutDestino>=360){
+                    gradosAzimutDestino=gradosAzimutDestino-360;
+                }
                 decimalFormat.applyPattern("#,##0.00"); // Establecer el patrón deseado
                 tv_azimut_destino.setText((int) gradosAzimutDestino + "º        -      "+decimalFormat.format(declinacionMagnetica) );
                 double distanciaDestino = Math.round(GeoUtilidades.calcularDistancia(latitudGPS, longuitudGPS, latitudDestino, longitudDestino));
@@ -334,6 +337,9 @@ public class MainActivity extends AppCompatActivity {
 
                         //multiplico poe -1 para ajustar este u oeste
                         double gradosBrujula = azimuth + (-1*declinacionMagnetica);
+                        if (gradosBrujula>=360){
+                            gradosBrujula=gradosBrujula-360;
+                        }
                         //gradosBrujula = (Math.round(gradosBrujula));
                         //String textoFormateado = toString().valueOf((int) gradosBrujula);
                         //textoFormateado = textoFormateado.replace("-", "");
