@@ -79,6 +79,7 @@ public class Brujula implements SensorEventListener {
 
             boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
                     mGeomagnetic);
+
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
