@@ -343,4 +343,47 @@ public class GridLocator {
         }
         return locucionGrid.toString();
     }
+
+    private void calcularGridGPT() {
+        double miLongitud = longitud + 180;
+        double miLatitud = latitud + 90;
+
+        char[] grid = new char[12];
+
+        // Calculamos las cuadrículas para la longitud y la latitud
+        for (int i = 0; i < 6; i++) {
+            grid[i * 2] = calcularGridCaracter(miLongitud, obtenerDivisiones(i, true), i % 2 == 0);
+            grid[i * 2 + 1] = calcularGridCaracter(miLatitud, obtenerDivisiones(i, false), i % 2 == 0);
+        }
+
+        this.gridLocator = String.valueOf(grid);
+    }
+
+    // Método para calcular cada caracter en función de longitud, divisiones y tipo de carácter
+    private char calcularGridCaracter(double coordenada, int divisiones, boolean esLetra) {
+        double grados = (esLetra ? 360.0 : 180.0) / divisiones;
+        int numeroGrid = (int) (coordenada / grados) % divisiones;
+
+        return (char) ((esLetra ? 'A' : '0') + numeroGrid);
+    }
+
+    // Método para definir las divisiones para cada nivel de longitud o latitud
+    private int obtenerDivisiones(int nivel, boolean esLongitud) {
+        switch (nivel) {
+            case 0:
+                return 18; // Cuadrícula 1 (letra)
+            case 1:
+                return 10; // Cuadrícula 2 (número)
+            case 2:
+                return 24; // Cuadrícula 3 (letra)
+            case 3:
+                return 10; // Cuadrícula 4 (número)
+            case 4:
+                return 24; // Cuadrícula 5 (letra)
+            case 5:
+                return 10; // Cuadrícula 6 (número)
+            default:
+                throw new IllegalArgumentException("Nivel inválido");
+        }
+    }
 }
