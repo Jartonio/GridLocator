@@ -306,6 +306,9 @@ public class GridLocator {
                 case 'W':
                     locucionGrid.append("WISKY").append("\n");
                     break;
+                case 'X':
+                    locucionGrid.append("X-RAY").append("\n");
+                    break;
                 case '0':
                     locucionGrid.append("CERO").append("\n");
                     break;
