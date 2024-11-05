@@ -96,6 +96,7 @@ public class Brujula implements SensorEventListener {
             return false;
         } else {
             return true;
+
         }
     }
     @Override
