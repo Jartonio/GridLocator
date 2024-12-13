@@ -97,6 +97,7 @@ public class GridLocator {
         grid[2] = (char) ('0' + numeroGrid);
         ultimo = totalCuadros;
 
+
         //longitud cuadricula 3
         divisiones = 24;
         grados = grados / divisiones;
